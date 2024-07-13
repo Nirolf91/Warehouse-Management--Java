@@ -1,0 +1,619 @@
+A.
+Care sunt expresiile valide care pot înlocui trei puncte din blocul următor?
+declare
+ v_1 emp%ROWTYPE ;
+begin
+…
+end ;
+/
+
+1. SELECT * INTO v_1 FROM emp WHERE empno= 7900; Valida
+2. UPDATE emp SET ROW=v_1 WHERE empno= 7900; Invalida
+3. SELECT COUNT(*) INTO v_1 FROM emp WHERE 1=2; Invalida
+4. SELECT * INTO v_1 FROM emp WHERE 1=2; Invalida
+5. SELECT * INTO v_1 FROM emp; Invalida
+
+
+B.
+Creaţi blocul PL/SQL care afişează cel mai mare salariu a departamentului SALES,
+utilizând o variabilă de legătură.
+
+SCRIPT:
+
+DECLARE
+  salariu_max NUMBER;
+BEGIN
+  SELECT MAX(SAL) INTO salariu_max
+  FROM EMP
+  WHERE DEPTNO = '30';
+  DBMS_OUTPUT.PUT_LINE('Cel mai mare salariu din departamentul SALES este: ' || salariu_max);
+END;
+/
+
+APELARE SCRIPT:
+
+SQL> @\\HOME\home\ec245\Desktop\BD2\script5.sql
+Cel mai mare salariu din departamentul SALES este: 3000
+
+PL/SQL procedure successfully completed.
+
+C.
+Creaţi blocul PL/SQL care preia de la tastatură un nume de departament şi returnează un
+mesaj ce indică numărul de angajaţi la acest departament.
+
+SCRIPT:
+
+ACCEPT numeDepartament CHAR PROMPT 'Introduceti numele departamentului: ';
+
+DECLARE
+  numeDepartament VARCHAR2(30);
+  nrDepartament NUMBER;
+  nrAngajati NUMBER;
+BEGIN
+  numeDepartament := UPPER('&numeDepartament');
+  IF numeDepartament = 'ACCOUNTING' THEN
+    nrDepartament := 10;
+  ELSIF numeDepartament = 'RESEARCH' THEN
+    nrDepartament := 20;
+  ELSIF numeDepartament = 'SALES' THEN
+    nrDepartament := 30;
+  ELSIF numeDepartament = 'OPERATIONS' THEN
+    nrDepartament := 40;
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Departamentul introdus nu este unul valid.');
+    RETURN;
+  END IF;
+  SELECT COUNT(*) INTO nrAngajati
+  FROM EMP
+  WHERE DEPTNO = nrDepartament;
+  DBMS_OUTPUT.PUT_LINE('Numarul de angajati in departamentul ' || numeDepartament || ' este: ' || nrAngajati);
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script6.sql
+Introduceti numele departamentului: sales
+old   6:   numeDepartament := UPPER('&numeDepartament');
+new   6:   numeDepartament := UPPER('sales');
+Numarul de angajati in departamentul SALES este: 6
+
+PL/SQL procedure successfully completed.
+
+D.
+Creaţi blocul PL/SQL care permite inserarea unui nou angajat:
+utilizaţi variabile de substituţie pentru parametrizarea blocului PL/SQL, pentru numele şi
+codul angajatului ; pentru salariu, utilizaţi rezultatul de la secţiunea B, dublat; celelalte
+coloane rămân nule. Confirmaţi (validaţi actualizările).
+După execuţie, afişaţi tabela.
+
+SCRIPT:
+ACCEPT numeAngajat CHAR PROMPT 'Introduceti numele angajatului: ';
+ACCEPT idAngajat NUMBER PROMPT 'Introduceti id-ul angajatului: ';
+ACCEPT deptno NUMBER PROMPT 'Introduceti numarul departamentului: ';
+
+DECLARE
+  numeAngajat VARCHAR2(50);
+  idAngajat NUMBER;
+  salariu_max2 NUMBER;
+  deptno NUMBER;
+BEGIN
+  numeAngajat := '&numeAngajat';
+  idAngajat := '&idAngajat';
+  deptno := '&deptno';
+  
+  DECLARE
+    salariu_max NUMBER;
+  BEGIN
+    SELECT MAX(SAL) INTO salariu_max
+    FROM EMP
+    WHERE DEPTNO = 30;
+    DBMS_OUTPUT.PUT_LINE('Cel mai mare salariu din departamentul SALES este: ' || salariu_max);
+    salariu_max2 := salariu_max * 2;
+  END;
+
+  INSERT INTO EMP (EMPNO, ENAME, SAL, DEPTNO)
+  VALUES (idAngajat, numeAngajat, salariu_max2, deptno);
+
+DBMS_OUTPUT.PUT_LINE('Am adaugat un nou angajat cu ID-ul: ' || idAngajat || ', cu numele: ' || numeAngajat || ', salariul: ' || salariu_max2 || ' RON, in departamentul: ' || deptno);
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script8.sql
+Introduceti numele angajatului: Stefan
+Introduceti id-ul angajatului: 7779
+Introduceti numarul departamentului: 10
+old   7:   numeAngajat := '&numeAngajat';
+new   7:   numeAngajat := 'Stefan';
+old   8:   idAngajat := '&idAngajat';
+new   8:   idAngajat := '      7779';
+old   9:   deptno := '&deptno';
+new   9:   deptno := '        10';
+Cel mai mare salariu din departamentul SALES este: 11400
+Am adaugat un nou angajat cu ID-ul: 7779, cu numele: Stefan, salariul: 22800 RON, in departamentul: 10
+
+PL/SQL procedure successfully completed.
+
+E.
+Creaţi blocul PL/SQL care permite modificarea locaţiei unui departament :
+utilizaţi variabilele de substituţie pentru a parametriza blocul PL/SQL, pentru numele
+departamentului şi noua locaţie. Confirmaţi (validaţi) actualizările.
+După execuţie, afişaţi tabela.
+
+SCRIPT:
+ACCEPT numeDepartament CHAR PROMPT 'Introduceti numele departamentului: ';
+ACCEPT numeLocatie CHAR PROMPT 'Introduceti numele locatiei noi: ';
+
+DECLARE
+    numeDepartament VARCHAR2(50);
+    numeLocatie VARCHAR2(50);
+BEGIN
+    numeDepartament := UPPER('&numeDepartament');
+	numeLocatie := UPPER('&numeLocatie');
+
+    UPDATE DEPT
+    SET LOC = numeLocatie
+    WHERE DNAME  = numeDepartament;
+   
+    DBMS_OUTPUT.PUT_LINE('Locația departamentului ' || numeDepartament || ' a fost modificata in ' || numeLocatie);
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script9.sql
+Introduceti numele departamentului: ACCOUNTING
+Introduceti numele locatiei noi: MIAMI
+old   5:     numeDepartament := '&numeDepartament';
+new   5:     numeDepartament := 'ACCOUNTING';
+old   6:        numeLocatie := '&numeLocatie';
+new   6:        numeLocatie := 'MIAMI';
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT * FROM DEPT;
+
+    DEPTNO DNAME          LOC
+---------- -------------- -------------
+        10 ACCOUNTING     MIAMI
+        20 RESEARCH       DALLAS
+        30 SALES          CHICAGO
+        40 OPERATIONS     BOSTON
+		
+F
+Creaţi blocul PL/SQL care permite ştergerea angajaţilor unui anumit departament, a cărui
+nume este introdus de la tastatură printr-o variabilă de substituţie. Afişaţi numărul de linii
+afectate (SQL%ROWCOUNT).
+După execuţie, afişaţi tabela.
+
+SCRIPT:
+ACCEPT numeDepartament CHAR PROMPT 'Introduceti numele departamentului: ';
+
+DECLARE
+    numeDepartament VARCHAR2(50);
+BEGIN
+    numeDepartament := UPPER('&numeDepartament');
+    DELETE FROM EMP
+    WHERE DEPTNO = (SELECT DEPTNO FROM DEPT WHERE DNAME = numeDepartament);
+   
+    DBMS_OUTPUT.PUT_LINE('Au fost stersi ' || SQL%ROWCOUNT || ' angajati din departamentul ' || numeDepartament);
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script10.sql
+Introduceti numele departamentului: RESEARCH
+old   4:     numeDepartament := UPPER('&numeDepartament');
+new   4:     numeDepartament := UPPER('RESEARCH');
+Au fost stersi 5 angajati din departamentul RESEARCH
+
+PL/SQL procedure successfully completed.
+
+G.
+Creati un bloc PL/SQL care gaseste in doi pasi numele departamentului in care lucreaza un
+angajat: mai intai cauta in tabela emp un angajat dupa nume (introdus la tastatura), iar apoi
+cauta numele departamentului in tabela dept.
+
+SCRIPT:
+ACCEPT numeAngajat CHAR PROMPT 'Introduceti numele angajatului: ';
+
+DECLARE
+    numeAngajat VARCHAR2(50);
+    numeDepartament VARCHAR2(50);
+    nrDepartament NUMBER;
+BEGIN
+	numeAngajat := UPPER('&numeAngajat');
+	
+    SELECT DEPTNO INTO nrDepartament
+    FROM EMP
+    WHERE ENAME = numeAngajat;
+	
+    SELECT DNAME INTO numeDepartament
+    FROM DEPT
+    WHERE DEPTNO = nrDepartament;
+	
+    DBMS_OUTPUT.PUT_LINE('Angajatul ' || numeAngajat || ' lucreaza in departamentul ' || numeDepartament);
+END;
+/
+
+APELARE SCRIPT:
+
+SQL> @\\HOME\home\ec245\Desktop\BD2\script11.sql
+Introduceti numele angajatului: martin
+old   6:        numeAngajat := UPPER('&numeAngajat');
+new   6:        numeAngajat := UPPER('martin');
+Angajatul MARTIN lucreaza in departamentul SALES
+
+PL/SQL procedure successfully completed.
+
+
+H.
+Creati un alt bloc PL/SQL care face acelasi lucru, intr-un singur pas.
+
+SCRIPT:
+ACCEPT numeAngajat CHAR PROMPT 'Introduceti numele angajatului: ';
+
+DECLARE
+    numeAngajat VARCHAR2(50);
+    numeDepartament VARCHAR2(50);
+BEGIN
+	numeAngajat := UPPER('&numeAngajat');
+	
+    SELECT DNAME
+    FROM DEPT
+    WHERE DEPTNO =(SELECT DEPTNO FROM EMP WHERE ENAME = numeAngajat);
+	
+    DBMS_OUTPUT.PUT_LINE('Angajatul ' || numeAngajat || ' lucreaza in departamentul ' || numeDepartament);
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script12.sql
+Introduceti numele angajatului: blake
+old   6:        numeAngajat := UPPER('&numeAngajat');
+new   6:        numeAngajat := UPPER('blake');
+Angajatul BLAKE lucreaza in departamentul SALES
+
+PL/SQL procedure successfully completed.
+
+I.
+Creati un bloc PL/SQL care cauta un angajat in tabela emp dupa numele sau (introdus la
+tastatura) si care ii modifica jobul in ‘EXPERT’ daca salariul este mai mare decat 2800.
+
+SCRIPT:
+ACCEPT numeAngajat CHAR PROMPT 'Introduceti numele angajatului: ';
+
+DECLARE
+    numeAngajat VARCHAR2(50);
+BEGIN
+	numeAngajat := UPPER('&numeAngajat');
+	
+	UPDATE EMP
+	SET JOB = 'EXPERT'
+	WHERE ENAME = numeAngajat AND SAL >  2800;
+	
+    DBMS_OUTPUT.PUT_LINE('Angajatul ' || numeAngajat || ' a primit functia de EXPERT');
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script13.sql
+Introduceti numele angajatului: blake
+old   4:        numeAngajat := UPPER('&numeAngajat');
+new   4:        numeAngajat := UPPER('blake');
+Angajatul BLAKE a primit functia de EXPERT
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT * FROM EMP;
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+      7698 BLAKE      EXPERT          7839 01-MAY-81       2850                    30
+      7782 CLARK      MANAGER         7839 09-JUN-81       2450                    10
+      7654 MARTIN     SALESMAN        7698 28-SEP-81       1250       1400         30
+      7499 ALLEN      SALESMAN        7698 20-FEB-81       1600        300         30
+      7844 TURNER     SALESMAN        7698 08-SEP-81       1500          0         30
+      7900 JAMES      CLERK           7698 03-DEC-81        950                    30
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+      7934 MILLER     CLERK           7782 23-JAN-82       1300                    10
+      7777 Cristian                                        5700                    30
+      7778 Andrei                                         11400                    30
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7779 Stefan                                         22800                    10
+
+12 rows selected.
+
+J.
+Creati un bloc PL/SQL care cauta un angajat in tabela emp dupa numele sau (introdus la
+tastatura) si care afiseaza un calificativ pentru salariul sau (foarte bun, bun, destul de bun,
+deloc bun) in functie de salariul inregistrat in tabela.
+
+SCRIPT:
+ACCEPT numeAngajat CHAR PROMPT 'Introduceti numele angajatului: ';
+
+DECLARE
+    numeAngajat VARCHAR2(50);
+	salariu 	NUMBER;
+	calificativ VARCHAR2(20);
+BEGIN
+	numeAngajat := UPPER('&numeAngajat');
+	
+    SELECT SAL INTO salariu
+    FROM EMP
+    WHERE ENAME = numeAngajat;
+	
+    IF salariu < 1000 THEN
+		calificativ := 'deloc bun';
+	ELSIF salariu BETWEEN 1000 AND 1500 THEN
+		calificativ := 'destul de bun';
+	ELSIF salariu BETWEEN 1500 AND 2000 THEN
+		calificativ := 'bun';
+	ELSIF salariu > 2000 THEN
+		calificativ := 'foarte bun';
+	END IF;
+	
+    DBMS_OUTPUT.PUT_LINE('Angajatul ' || numeAngajat || ' cu salariul in valoare de ' || salariu || ' RON, are un salariu: ' || calificativ);
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script14.sql
+Introduceti numele angajatului: blake
+old   6:        numeAngajat := UPPER('&numeAngajat');
+new   6:        numeAngajat := UPPER('blake');
+Angajatul BLAKE cu salariul in valoare de 2850 RON, are un salariu: foarte bun
+
+PL/SQL procedure successfully completed.
+
+K.
+Creati un bloc PL/SQL care calculeaza suma primelor 100 numere intregi. (utilizati o bucla
+cat timp)
+
+SCRIPT:
+DECLARE
+    i NUMBER := 1;
+    suma NUMBER := 0;
+BEGIN
+    WHILE i<=100 LOOP
+       suma := suma+i;
+	   i := i+1;
+	END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Suma primelor 100 de numere intregi este: ' || suma);
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script15.sql
+Suma primelor 100 de numere intregi este: 5050
+
+PL/SQL procedure successfully completed.
+
+L
+Creati un bloc PL/SQL care calculeaza suma primelor 100 numere intregi. (utilizati o bucla
+pana cand)
+
+SCRIPT:
+DECLARE
+    i NUMBER := 1;
+    suma NUMBER := 0;
+BEGIN
+	LOOP
+       suma := suma+i;
+	   i := i+1;
+	   EXIT WHEN i > 100;
+	END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Suma primelor 100 de numere intregi este: ' || suma);
+END;
+/
+
+APELARE SCRIPT:
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script16.sql
+Suma primelor 100 de numere intregi este: 5050
+
+PL/SQL procedure successfully completed.
+
+M.
+Creati un bloc PL/SQL care permite inserarea in tabela dept a cinci departamente noi, cu
+nume la alegere sau generate, si avand coduri secventiale, din 10 in 10, dupa ultimul
+existent.
+
+SCRIPT:
+ACCEPT numeDepartament1 CHAR PROMPT 'Introduceti numele primului departament: ';
+ACCEPT numeDepartament2 CHAR PROMPT 'Introduceti numele celui de al doilea departament: ';
+ACCEPT numeDepartament3 CHAR PROMPT 'Introduceti numele celui de al treilea departament: ';
+ACCEPT numeDepartament4 CHAR PROMPT 'Introduceti numele celui de al patrulea departament: ';
+ACCEPT numeDepartament5 CHAR PROMPT 'Introduceti numele celui de al cincilea departament: ';
+
+DECLARE
+    i NUMBER;
+BEGIN
+    SELECT MAX(DEPTNO) + 10 INTO i
+	FROM dept;
+
+    INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 1, '&numeDepartament1');
+    INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 2, '&numeDepartament2');
+    INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 3, '&numeDepartament3');
+    INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 4, '&numeDepartament4');
+    INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 5, '&numeDepartament5');
+
+    FOR j IN (SELECT * FROM DEPT WHERE DEPTNO BETWEEN i + 1 AND i + 5) LOOP
+        DBMS_OUTPUT.PUT_LINE('Am adaugat departamentul cu id-ul ' || j.DEPTNO || ' si numele ' || j.DNAME);
+    END LOOP;
+
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script17.sql
+Introduceti numele primului departament: MANAGEMENT
+Introduceti numele celui de-al doilea departament: VANZARI
+Introduceti numele celui de-al treilea departament: CUMPARARI
+Introduceti numele celui de-al patrulea departament: PRODUSE
+Introduceti numele celui de-al cincilea departament: STOC
+old   9:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 1, '&numeDepartament1');
+new   9:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 1, 'MANAGEMENT');
+old  10:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 2, '&numeDepartament2');
+new  10:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 2, 'VANZARI');
+old  11:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 3, '&numeDepartament3');
+new  11:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 3, 'CUMPARARI');
+old  12:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 4, '&numeDepartament4');
+new  12:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 4, 'PRODUSE');
+old  13:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 5, '&numeDepartament5');
+new  13:     INSERT INTO dept (DEPTNO, DNAME) VALUES (i + 5, 'STOC');
+Am adaugat departamentul cu id-ul 51 si numele MANAGEMENT
+Am adaugat departamentul cu id-ul 52 si numele VANZARI
+Am adaugat departamentul cu id-ul 53 si numele CUMPARARI
+Am adaugat departamentul cu id-ul 54 si numele PRODUSE
+Am adaugat departamentul cu id-ul 55 si numele STOC
+PL/SQL procedure successfully completed.
+
+N.
+Creati un bloc PL/SQL care cauta un angajat in tabela emp dupa numele sau (introdus la
+tastatura) si care ii mareste comisionul (daca primeste comision!), in functie de salariu:
+pentru un salariu mai mic de 1000 adauga 10% din salariu la comision; pentru un salariu
+intre 1000 si 1500, adauga 15% din salariu la comision; pentru un salariu mai mare
+decat1500, adauga 20% din salariu la comision. Validati modificarile si testati modulul
+pentru diversi angajati.
+
+SCRIPT:
+ACCEPT numeAngajat CHAR PROMPT 'Introduceti numele angajatului: ';
+
+DECLARE
+    numeAngajat VARCHAR2(50);
+    salariu NUMBER;
+    comision NUMBER;
+BEGIN
+    numeAngajat := UPPER('&numeAngajat');
+
+    SELECT SAL, COMM INTO salariu, comision
+    FROM EMP
+    WHERE ENAME = numeAngajat;
+	
+	IF comision IS NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Angajatul ' || numeAngajat || ' nu are comision.');
+    ELSIF salariu < 1000 THEN
+        comision := comision + 0.1 * salariu; 
+    ELSIF salariu BETWEEN 1000 AND 1500 THEN
+        comision := comision + 0.15 * salariu;
+    ELSIF salariu > 1500 THEN
+        comision := comision + 0.2 * salariu;
+    END IF;
+
+    UPDATE EMP
+    SET COMM = comision
+    WHERE ENAME = numeAngajat;
+	
+	IF comision IS NOT NULL THEN
+    DBMS_OUTPUT.PUT_LINE('Comisionul angajatului ' || numeAngajat || ' a fost actualizat la: ' || comision || ' RON.');
+	END IF;
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script18.sql
+Introduceti numele angajatului: ward
+old   6:     v_numeAngajat := UPPER('&numeAngajat');
+new   6:     v_numeAngajat := UPPER('ward');
+Comisionul angajatului WARD a fost actualizat la: 687.5 RON.
+
+SQL> @\\HOME\home\ec245\Desktop\BD2\script18.sql
+Introduceti numele angajatului: BLAKE
+old   6:     numeAngajat := UPPER('&numeAngajat');
+new   6:     numeAngajat := UPPER('BLAKE');
+Angajatul BLAKE nu are comision.
+
+O.
+Creati un bloc PL/SQL care cauta un angajat in tabela emp dupa numele sau (introdus la
+tastatura) si care ii mareste salariul astfel:
+pentru un salariu din prima categorie, se adauga 5%, pentru a doua categorie, se adauga
+10% si pentru rest, 20%. (Aveti la dispozitie tabela salgrade)
+
+SCRIPT:
+ACCEPT numeAngajat CHAR PROMPT 'Introduceti numele angajatului: ';
+
+DECLARE
+    numeAngajat VARCHAR2(50);
+    salariu NUMBER;
+    comision NUMBER;
+    grad NUMBER;
+BEGIN
+    numeAngajat := UPPER('&numeAngajat');
+
+    SELECT SAL, COMM INTO salariu, comision
+    FROM EMP
+    WHERE ENAME = numeAngajat;
+
+    IF SQL%FOUND THEN
+        SELECT GRADE
+        INTO grad
+        FROM SALGRADE
+        WHERE salariu BETWEEN LOSAL AND HISAL;
+
+        IF grad = 1 THEN
+            salariu := salariu + 0.05 * salariu;
+        ELSIF grad = 2 THEN
+            salariu := salariu + 0.1 * salariu;
+        ELSE
+            salariu := salariu + 0.2 * salariu;
+        END IF;
+
+        UPDATE EMP
+        SET SAL = salariu
+        WHERE ENAME = numeAngajat;
+
+        DBMS_OUTPUT.PUT_LINE('Salariul angajatului ' || numeAngajat || ' a fost actualizat la: ' || salariu || ' RON.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Angajatul ' || numeAngajat || ' nu a fost gasit.');
+    END IF;
+END;
+/
+
+APELARE SCRIPT:
+SQL> @\\HOME\home\ec245\Desktop\BD2\script19.sql
+Introduceti numele angajatului: blake
+old   7:     numeAngajat := UPPER('&numeAngajat');
+new   7:     numeAngajat := UPPER('blake');
+Salariul angajatului BLAKE a fost actualizat la: 3420 RON.
+
+PL/SQL procedure successfully completed.
+
+P.
+Creati un bloc PL/SQL care cauta un departament in tabela dept dupa numele sau (introdus
+la tastatura) si apoi verifica daca are cel putin 10 angajati; daca nu, atunci sa adauge noi
+angajati, pana la 10, pentru care codul si numele vor fi introduse de la tastatura. 
+
+ACCEPT numeDepartament CHAR PROMPT 'Introduceti numele departamentului: ';
+
+DECLARE
+    numeDepartament VARCHAR2(50);
+    nrAngajati NUMBER;
+    codAngajat NUMBER;
+    numeAngajat VARCHAR2(50);
+BEGIN
+    numeDepartament := UPPER('&numeDepartament');
+
+    SELECT COUNT(*)
+    INTO nrAngajati
+    FROM EMP
+    WHERE DEPTNO = (SELECT DEPTNO FROM DEPT WHERE DNAME = numeDepartament);
+
+    IF nrAngajati >= 10 THEN
+        DBMS_OUTPUT.PUT_LINE('Departamentul ' || numeDepartament || ' are deja 10 angajati.');
+    ELSE
+        FOR i IN 1..(10 - nrAngajati) LOOP
+			numeAngajat := UPPER('&numeAngajat');
+			codAngajat := '&codAngajat';
+            INSERT INTO EMP (EMPNO, ENAME, DEPTNO)
+            VALUES (codAngajat, numeAngajat, (SELECT DEPTNO FROM DEPT WHERE DNAME = numeDepartament));
+
+            DBMS_OUTPUT.PUT_LINE('Angajatul ' || numeAngajat || ' cu codul ' || codAngajat || ' a fost adaugat in departamentul ' || numeDepartament);
+        END LOOP;
+    END IF;
+END;
+/
+
+
