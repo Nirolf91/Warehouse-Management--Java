@@ -1,0 +1,65 @@
+/* styles.css */
+/* Stiluri pentru formularul de filtrare */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.filter-label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.filter-input {
+    width: 120px; /* Dimensiune mică pentru câmpurile de filtrare */
+    padding: 2px 4px;
+    font-size: 12px;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+button.filter-button {
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Stiluri pentru imaginea de fundal */
+body {
+    background-image: url('static/warehouse1.jpg'); /* Calea către imaginea de fundal */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Stiluri pentru containerul formularului */
+.login-container {
+    background: rgba(255, 255, 255, 0.9); /* Fundal semi-transparent */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+<style>
+    .image-container img {
+        display: block; /* Elimină spațiile nedorite */
+        width: 100%; /* Imaginea va ocupa 100% din lățime */
+        height: auto; /* Păstrează proporțiile imaginii */
+    }
+</style>

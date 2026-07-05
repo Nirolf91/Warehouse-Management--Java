@@ -1,0 +1,10 @@
+target/
+out/
+.idea/
+.smarttomcat/
+*.iml
+
+*.class
+*.log
+
+/.env
