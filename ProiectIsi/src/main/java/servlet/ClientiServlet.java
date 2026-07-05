@@ -5,8 +5,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import database.DatabaseConnection;
 import filter.ClientiFilter;
-
-import filter.ComenziFilter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -35,32 +33,23 @@ public class ClientiServlet extends HttpServlet {
         }
 
         // Preluăm parametrii pentru filtrare
-        String idComanda = request.getParameter("id");
-        String dataComenzii = request.getParameter("data_comenzii");
-        String idClient = request.getParameter("id_client");
-        String idFurnizor = request.getParameter("id_furnizor");
-        String idAngajat = request.getParameter("id_angajat");
-        String idMaterial = request.getParameter("id_material");
-        String totalComanda = request.getParameter("total_comanda");
-        String statutComanda = request.getParameter("statut_comanda");
-        String tipComanda = request.getParameter("tip_comanda");
-        String cantitate = request.getParameter("cantitate");
-        String pretTotal = request.getParameter("pret_total");
-        String idTransportator = request.getParameter("id_transportator");
+        String idClient = request.getParameter("id");
+        String nume = request.getParameter("nume");
+        String adresa = request.getParameter("adresa");
+        String contact = request.getParameter("contact");
 
         try {
-            // Instanțiem clasa ComenziFilter pentru filtrare
-            ComenziFilter filter = new ComenziFilter();
-            ResultSet rs = filter.filterComenzi(idComanda, dataComenzii, idClient, idFurnizor, idAngajat,
-                    idMaterial, totalComanda, statutComanda, tipComanda, cantitate, pretTotal, idTransportator);
+            // Instanțiem clasa ClientiFilter pentru filtrare
+            ClientiFilter filter = new ClientiFilter();
+            ResultSet rs = filter.filterClienti(idClient, nume, adresa, contact);
 
             // Pasăm rezultatul filtrării către JSP
             request.setAttribute("resultSet", rs);
-            request.getRequestDispatcher("comenzi.jsp").forward(request, response);
+            request.getRequestDispatcher("clienti.jsp").forward(request, response);
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("comenzi.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("clienti.jsp?status=error&message=Eroare SQL: " + e.getMessage());
         }
     }
 
