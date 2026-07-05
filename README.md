@@ -39,9 +39,8 @@ The application is packaged as a Maven WAR project and runs on Tomcat with Jakar
 |       |   `-- servlet/         # CRUD/export/import/login servlets
 |       `-- webapp/              # JSP pages and static assets
 |-- sql/schema.sql               # Oracle schema and demo data
-|-- imagini/                     # project/documentation images
-|-- Proiect ISI.docx             # original project documentation
-`-- diagrama entitate relatie.pptx
+|-- imagini/                     # supporting images
+`-- README.md
 ```
 
 ## Database Setup
