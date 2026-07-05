@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Aplicație Gestionare</title>
+    <title>Management Application</title>
    <style>
            body {
                font-family: Arial, sans-serif;
@@ -30,22 +30,22 @@
            h1 {
                text-align: center;
                margin: 20px 0;
-               font-size: 2.5em; /* Ajustează dimensiunea fontului dacă e necesar */
+               font-size: 2.5em; /* Adjusts the font size if needed */
            }
            .image-container img {
                display: block;
-               width: 100%; /* Asigură lățimea maximă */
-               height: auto; /* Păstrează proporțiile imaginii */
+               width: 100%; /* Ensures maximum width */
+               height: auto; /* Preserves image proportions */
            }
        </style>
 </head>
 <body>
     <nav>
-        <a href="angajati.jsp">Angajați</a>
-        <a href="clienti.jsp">Clienți</a>
+        <a href="angajati.jsp">Employees</a>
+        <a href="clienti.jsp">Clients</a>
         <a href="comenzi.jsp">Comenzi</a>
         <a href="furnizori.jsp">Furnizori</a>
-        <a href="evaluari.jsp">Evaluări</a>
+        <a href="evaluari.jsp">Reviews</a>
         <a href="materiale.jsp">Materiale</a>
         <a href="transportatori.jsp">Transportatori</a>
         <a href="logout.jsp" style="float: right;">Logout</a>
@@ -55,19 +55,19 @@
         h1 {
             text-align: center;
             margin: 20px 0;
-            font-size: 2.5em; /* Ajustează dimensiunea fontului dacă e necesar */
+            font-size: 2.5em; /* Adjusts the font size if needed */
         }
     </style>
 
-    <h1> Gestionare Depozit de Materiale </h1>
+    <h1> Material Warehouse Management </h1>
     <%
         if ("admin".equals(role)) {
-            out.print("<p>Sunteți autentificat ca administrator.</p>");
+            out.print("<p>You are logged in as an administrator.</p>");
         } else if ("user".equals(role)) {
-            out.print("<p>Sunteți autentificat ca utilizator.</p>");
+            out.print("<p>You are logged in as a standard user.</p>");
         }
     %>
-      <!-- Imaginea principală -->
+      <!-- Main image -->
     <div class="image-container">
         <img src="static/warehouse.jpg" alt="Warehouse">
     </div>

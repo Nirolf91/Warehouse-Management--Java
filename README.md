@@ -1,66 +1,66 @@
 # Warehouse Management ISI
 
-Aplicatie web Java pentru gestionarea unui depozit de materiale. Proiectul acopera fluxuri simple de administrare pentru angajati, clienti, furnizori, materiale, transportatori, comenzi, evaluari si jurnalizarea unor actiuni importante.
+Warehouse Management ISI is a Java web application for managing a construction-material warehouse. It covers the main operational flows of a small warehouse: employees, clients, suppliers, materials, carriers, orders, reviews, authentication and activity logging.
 
-Aplicatia este construita ca proiect Maven de tip WAR si ruleaza pe Tomcat cu Jakarta Servlet/JSP. Datele sunt persistate intr-o baza Oracle, iar scriptul de initializare este inclus in repository.
+The application is packaged as a Maven WAR project and runs on Tomcat with Jakarta Servlet/JSP. Data is stored in Oracle Database, and the repository includes a SQL bootstrap script so the project can be imported and run on another machine.
 
-## Functionalitati
+## Features
 
-- autentificare pe baza de utilizatori si roluri (`admin`, `user`)
-- CRUD pentru angajati, clienti, furnizori, materiale, transportatori, comenzi si evaluari
-- filtrare in paginile principale
-- export CSV/PDF pentru mai multe entitati
-- import angajati din fisiere CSV/XLSX
-- grafice JSON pentru angajati, comenzi si evaluari
-- jurnalizare actiuni pentru operatii importante
+- username/password authentication with `admin` and `user` roles
+- CRUD flows for employees, clients, suppliers, materials, carriers, orders and reviews
+- filtering on the main listing pages
+- CSV/PDF export for multiple entities
+- employee import from CSV/XLSX files
+- JSON endpoints for employee, order and review charts
+- action logging for important operations
 
-## Tehnologii
+## Technologies
 
 - Java 17
 - Maven
 - Jakarta Servlet/JSP
-- Apache Tomcat 10.1+ sau Tomcat 11
+- Apache Tomcat 10.1+ or Tomcat 11
 - Oracle Database / Oracle SQL Developer
 - Oracle JDBC Driver
 - iText PDF, Gson, Apache POI
 
-## Structura proiectului
+## Project Structure
 
 ```text
 .
-├── ProiectIsi/                  # proiectul Maven importabil in IDE
-│   ├── pom.xml
-│   └── src/main/
-│       ├── java/
-│       │   ├── database/        # conexiunea la Oracle
-│       │   ├── filter/          # filtrari SQL parametrizate
-│       │   ├── grafic/          # endpoint-uri JSON pentru grafice
-│       │   ├── service/         # servicii auxiliare, inclusiv logging
-│       │   └── servlet/         # servlet-uri CRUD/export/import/login
-│       └── webapp/              # pagini JSP si resurse statice
-├── sql/schema.sql               # schema Oracle + date demo
-├── imagini/                     # imagini folosite in documentatie/proiect
-├── Proiect ISI.docx             # documentatia proiectului
-└── diagrama entitate relatie.pptx
+|-- ProiectIsi/                  # Maven project imported by the IDE
+|   |-- pom.xml
+|   `-- src/main/
+|       |-- java/
+|       |   |-- database/        # Oracle connection helper
+|       |   |-- filter/          # parameterized SQL filters
+|       |   |-- grafic/          # JSON chart endpoints
+|       |   |-- service/         # helper services, including logging
+|       |   `-- servlet/         # CRUD/export/import/login servlets
+|       `-- webapp/              # JSP pages and static assets
+|-- sql/schema.sql               # Oracle schema and demo data
+|-- imagini/                     # project/documentation images
+|-- Proiect ISI.docx             # original project documentation
+`-- diagrama entitate relatie.pptx
 ```
 
-## Configurare baza de date
+## Database Setup
 
-1. Deschide Oracle SQL Developer.
-2. Conecteaza-te la utilizatorul Oracle pe care vrei sa ruleze aplicatia. In varianta locala folosita la dezvoltare, utilizatorul este `system`.
-3. Deschide fisierul `sql/schema.sql`.
-4. Ruleaza tot scriptul. Scriptul recreeaza tabelele, secventele, trigger-ele si insereaza date demo.
+1. Open Oracle SQL Developer.
+2. Connect to the Oracle user/schema used by the application. The local development setup uses the `system` user.
+3. Open `sql/schema.sql`.
+4. Run the full script. It recreates the tables, sequences, triggers and demo data.
 
-Scriptul creeaza inclusiv utilizatori pentru login in aplicatie:
+The script also creates demo login accounts:
 
 ```text
 admin / admin123
 user  / user123
 ```
 
-## Configurare conexiune Oracle
+## Oracle Connection Configuration
 
-Aplicatia citeste conexiunea la baza de date din variabile de mediu. Valorile implicite sunt:
+The application reads the database connection from environment variables. Defaults are:
 
 ```text
 WAREHOUSE_DB_URL=jdbc:oracle:thin:@localhost:1521:orcl
@@ -68,84 +68,84 @@ WAREHOUSE_DB_USER=system
 WAREHOUSE_DB_PASSWORD=
 ```
 
-Pe Windows PowerShell, seteaza parola Oracle local inainte de rulare:
+On Windows PowerShell, set the local Oracle password before running the app:
 
 ```powershell
 $env:WAREHOUSE_DB_URL="jdbc:oracle:thin:@localhost:1521:orcl"
 $env:WAREHOUSE_DB_USER="system"
-$env:WAREHOUSE_DB_PASSWORD="<parola-ta-oracle>"
+$env:WAREHOUSE_DB_PASSWORD="<your-oracle-password>"
 ```
 
-Pentru configuratia locala a autorului, parola indicata se seteaza in `WAREHOUSE_DB_PASSWORD`. Nu este recomandat ca parolele reale sa fie salvate direct in cod sau commit-uite pe GitHub.
+For the author's local setup, the provided SQL Developer password should be set as the value of `WAREHOUSE_DB_PASSWORD`. Real passwords should not be hardcoded or committed to GitHub.
 
-Alternativ, poti pasa valorile ca proprietati JVM:
+Alternatively, pass the values as JVM properties:
 
 ```text
 -Dwarehouse.db.url=jdbc:oracle:thin:@localhost:1521:orcl
 -Dwarehouse.db.user=system
--Dwarehouse.db.password=<parola-ta-oracle>
+-Dwarehouse.db.password=<your-oracle-password>
 ```
 
-## Import in IDE
+## IDE Import
 
 ### IntelliJ IDEA
 
-1. `File` -> `Open`.
-2. Selecteaza folderul `ProiectIsi` sau direct fisierul `ProiectIsi/pom.xml`.
-3. Alege import ca proiect Maven.
-4. Configureaza SDK-ul pe Java 17.
-5. Configureaza un server Tomcat 10.1+ sau Tomcat 11.
-6. Adauga artifact-ul WAR generat de Maven sau ruleaza configuratia Tomcat pe modulul `ProiectIsi`.
-7. Seteaza variabilele de mediu din sectiunea de conexiune Oracle in configuratia de run.
+1. Go to `File` -> `Open`.
+2. Select the `ProiectIsi` folder or the `ProiectIsi/pom.xml` file.
+3. Import it as a Maven project.
+4. Set the project SDK to Java 17.
+5. Configure Tomcat 10.1+ or Tomcat 11.
+6. Add the generated WAR artifact or run the Tomcat configuration against the `ProiectIsi` module.
+7. Add the Oracle environment variables in the run configuration.
 
 ### Eclipse
 
-1. `File` -> `Import`.
-2. `Maven` -> `Existing Maven Projects`.
-3. La `Root Directory`, selecteaza folderul `ProiectIsi`.
-4. Finalizeaza importul si seteaza Java 17.
-5. Adauga proiectul pe un server Tomcat compatibil Jakarta.
+1. Go to `File` -> `Import`.
+2. Select `Maven` -> `Existing Maven Projects`.
+3. For `Root Directory`, select `ProiectIsi`.
+4. Finish the import and set Java 17.
+5. Add the project to a Jakarta-compatible Tomcat server.
 
-## Build local
+## Local Build
 
-Din folderul `ProiectIsi`:
+From the `ProiectIsi` folder:
 
 ```powershell
 mvn clean package
 ```
 
-WAR-ul rezultat va fi:
+The generated WAR is:
 
 ```text
 ProiectIsi/target/warehouse-management-isi.war
 ```
 
-Acest fisier poate fi deployat in Tomcat.
+Deploy this file to Tomcat.
 
-## Rulare in Tomcat
+## Running on Tomcat
 
-1. Porneste Oracle Database si verifica listener-ul.
-2. Ruleaza `sql/schema.sql` daca baza nu este initializata.
-3. Seteaza variabilele de mediu pentru conexiune.
-4. Ruleaza `mvn clean package` in `ProiectIsi`.
-5. Copiaza `ProiectIsi/target/warehouse-management-isi.war` in folderul `webapps` al Tomcat sau deployeaza-l din IDE.
-6. Acceseaza aplicatia la:
+1. Start Oracle Database and make sure the listener is available.
+2. Run `sql/schema.sql` if the schema is not initialized.
+3. Set the Oracle connection environment variables.
+4. Run `mvn clean package` inside `ProiectIsi`.
+5. Copy `ProiectIsi/target/warehouse-management-isi.war` to Tomcat's `webapps` folder or deploy it from the IDE.
+6. Open:
 
 ```text
 http://localhost:8080/warehouse-management-isi/
 ```
 
-## Ce face fiecare modul
+## Module Overview
 
-- `database.DatabaseConnection` centralizeaza conexiunea la Oracle si permite configurare prin environment/JVM properties.
-- clasele din `filter` construiesc interogari parametrizate pentru paginile de listare si filtrare.
-- servlet-urile din `servlet` gestioneaza operatiile CRUD, exportul CSV/PDF, importul de angajati si autentificarea.
-- servlet-urile din `grafic` expun date agregate in JSON pentru graficele din interfata.
-- `service.LogService` scrie actiuni in tabela `Logs`.
-- paginile JSP din `webapp` reprezinta interfata pentru utilizator.
+- `database.DatabaseConnection` centralizes the Oracle connection and supports environment/JVM configuration.
+- `filter` classes build parameterized queries for listing and filtering pages.
+- `servlet` classes handle CRUD operations, CSV/PDF export, employee import and authentication.
+- `grafic` servlets expose aggregated JSON data for charts.
+- `service.LogService` writes important actions to the `Logs` table.
+- JSP files in `webapp` provide the user interface.
 
-## Observatii
+## Notes
 
-- Proiectul foloseste parole simple pentru conturile demo; acestea sunt potrivite doar pentru prezentare locala.
-- Parola Oracle nu este salvata in repository. Seteaz-o local prin `WAREHOUSE_DB_PASSWORD`.
-- Fisierul local Smart Tomcat `ProiectIsi.xml` este ignorat, deoarece contine cai absolute specifice calculatorului pe care a fost creat.
+- Demo accounts use simple passwords and are intended only for local presentation.
+- The Oracle password is not stored in the repository. Set it locally through `WAREHOUSE_DB_PASSWORD`.
+- The local Smart Tomcat file `ProiectIsi.xml` is ignored because it contains absolute paths specific to one machine.

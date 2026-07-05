@@ -26,13 +26,13 @@ public class AngajatiServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String exportFormat = request.getParameter("export"); // Verificăm dacă exportăm datele
+        String exportFormat = request.getParameter("export"); // Check whether data export was requested
         if (exportFormat != null) {
             exportData(exportFormat, request, response);
             return;
         }
 
-        // Filtrare angajați cu AngajatiFilter
+        // Filter employees with AngajatiFilter
         String idParam = request.getParameter("id");
         String nume = request.getParameter("nume");
         String functie = request.getParameter("functie");
@@ -42,12 +42,12 @@ public class AngajatiServlet extends HttpServlet {
             AngajatiFilter filter = new AngajatiFilter();
             ResultSet rs = filter.filterAngajati(idParam, nume, functie, contact);
 
-            // Pasăm datele către JSP
+            // Forward data to JSP
             request.setAttribute("resultSet", rs);
             request.getRequestDispatcher("angajati.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("angajati.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("angajati.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -79,11 +79,11 @@ public class AngajatiServlet extends HttpServlet {
                     int rowsDeleted = pstmt.executeUpdate();
 
                     // Log the delete action
-                    LogService.logAction(utilizator, rol, "Ștergere angajat", deleteQuery);
+                    LogService.logAction(utilizator, rol, "Delete employee", deleteQuery);
 
                     response.sendRedirect(rowsDeleted > 0 ?
-                            "angajati.jsp?status=success&message=Angajat șters cu succes!" :
-                            "angajati.jsp?status=error&message=Nu s-a găsit angajatul pentru ștergere.");
+                            "angajati.jsp?status=success&message=Employee deleted successfully!" :
+                            "angajati.jsp?status=error&message=No employee was found for deletion.");
                 }
             } else if (nume != null && functie != null && contact != null) {
                 if (idParam != null && !idParam.isEmpty()) {
@@ -97,9 +97,9 @@ public class AngajatiServlet extends HttpServlet {
                         pstmt.executeUpdate();
 
                         // Log the update action
-                        LogService.logAction(utilizator, rol, "Actualizare angajat", updateQuery);
+                        LogService.logAction(utilizator, rol, "Update employee", updateQuery);
 
-                        response.sendRedirect("angajati.jsp?status=success&message=Angajat actualizat cu succes!");
+                        response.sendRedirect("angajati.jsp?status=success&message=Employee updated successfully!");
                     }
                 } else {
                     // Insert action
@@ -111,17 +111,17 @@ public class AngajatiServlet extends HttpServlet {
                         pstmt.executeUpdate();
 
                         // Log the insert action
-                        LogService.logAction(utilizator, rol, "Adăugare angajat", insertQuery);
+                        LogService.logAction(utilizator, rol, "Add employee", insertQuery);
 
-                        response.sendRedirect("angajati.jsp?status=success&message=Angajat adăugat cu succes!");
+                        response.sendRedirect("angajati.jsp?status=success&message=Employee added successfully!");
                     }
                 }
             } else {
-                response.sendRedirect("angajati.jsp?status=error&message=Datele nu sunt complete!");
+                response.sendRedirect("angajati.jsp?status=error&message=The submitted data is incomplete!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("angajati.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("angajati.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -142,7 +142,7 @@ public class AngajatiServlet extends HttpServlet {
                 exportToPDF(rs, response);
             }
         } catch (Exception e) {
-            response.sendRedirect("angajati.jsp?status=error&message=Eroare la export: " + e.getMessage());
+            response.sendRedirect("angajati.jsp?status=error&message=Export error: " + e.getMessage());
         }
     }
 
@@ -169,12 +169,12 @@ public class AngajatiServlet extends HttpServlet {
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        document.add(new Paragraph("Lista Angajați\n\n"));
+        document.add(new Paragraph("Employee List\n\n"));
 
         PdfPTable table = new PdfPTable(4);
         table.addCell("ID");
-        table.addCell("Nume");
-        table.addCell("Funcție");
+        table.addCell("Name");
+        table.addCell("Job Title");
         table.addCell("Date de Contact");
 
         while (rs.next()) {

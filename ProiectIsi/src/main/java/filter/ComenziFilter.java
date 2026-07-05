@@ -10,22 +10,22 @@ import java.sql.SQLException;
 public class ComenziFilter {
 
     /**
-     * Filtrează comenzile pe baza parametrilor dați.
+     * Filters orders using the provided parameters.
      *
-     * @param idComanda       ID-ul comenzii
+     * @param idComanda       Order ID
      * @param dataComenzii    Data comenzii
      * @param idClient        ID-ul clientului
-     * @param idFurnizor      ID-ul furnizorului
-     * @param idAngajat       ID-ul angajatului
+     * @param idFurnizor      Supplier ID
+     * @param idAngajat       Employee ID
      * @param idMaterial      ID-ul materialului
-     * @param totalComanda    Totalul comenzii
-     * @param statutComanda   Statutul comenzii
-     * @param tipComanda      Tipul comenzii
-     * @param cantitate       Cantitatea comenzii
-     * @param pretTotal       Prețul total
-     * @param idTransportator ID-ul transportatorului
-     * @return ResultSet cu rezultatele filtrării
-     * @throws SQLException dacă apare o eroare SQL
+     * @param totalComanda    Order total
+     * @param statutComanda   Order status
+     * @param tipComanda      Order type
+     * @param cantitate       Quantitya comenzii
+     * @param pretTotal       Total price
+     * @param idTransportator Carrier ID
+     * @return ResultSet with filtered results
+     * @throws SQLException if a SQL error occurs
      */
     public ResultSet filterComenzi(String idComanda, String dataComenzii, String idClient, String idFurnizor,
                                    String idAngajat, String idMaterial, String totalComanda, String statutComanda,
@@ -35,7 +35,7 @@ public class ComenziFilter {
         Connection connection = DatabaseConnection.getConnection();
         StringBuilder query = new StringBuilder("SELECT * FROM Comenzi WHERE 1=1");
 
-        // Construirea query-ului cu parametrii validați
+        // Build the query with validated parameters
         if (idComanda != null && !idComanda.trim().isEmpty()) query.append(" AND ID_COMANDA = ?");
         if (dataComenzii != null && !dataComenzii.trim().isEmpty()) query.append(" AND DATA_COMENZII = ?");
         if (idClient != null && !idClient.trim().isEmpty()) query.append(" AND ID_CLIENT = ?");
@@ -49,7 +49,7 @@ public class ComenziFilter {
         if (pretTotal != null && !pretTotal.trim().isEmpty()) query.append(" AND PRET_TOTAL = ?");
         if (idTransportator != null && !idTransportator.trim().isEmpty()) query.append(" AND ID_TRANSPORTATOR = ?");
 
-        // Pregătirea query-ului
+        // Prepare the query
         PreparedStatement pstmt = connection.prepareStatement(query.toString());
         int index = 1;
 
@@ -68,15 +68,15 @@ public class ComenziFilter {
             if (pretTotal != null && !pretTotal.trim().isEmpty()) pstmt.setDouble(index++, Double.parseDouble(pretTotal));
             if (idTransportator != null && !idTransportator.trim().isEmpty()) pstmt.setInt(index++, Integer.parseInt(idTransportator));
         } catch (NumberFormatException e) {
-            System.err.println("Eroare de conversie a parametrilor: " + e.getMessage());
+            System.err.println("Parameter conversion error: " + e.getMessage());
             throw new SQLException("Parametru invalid: " + e.getMessage());
         }
 
         // Logare pentru debugging
         System.out.println("Query generat: " + query);
-        System.out.println("Parametri setați pentru query.");
+        System.out.println("Query parameters were set.");
 
-        // Execută query-ul și returnează rezultatul
+        // Execute the query and return the result
         return pstmt.executeQuery();
     }
 }

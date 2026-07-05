@@ -32,23 +32,23 @@ public class ComenziServlet extends HttpServlet {
             return;
         }
 
-        // Filtrare comenzi
+        // Filter orders
         String idComanda = request.getParameter("id");
         String dataComenzii = request.getParameter("data_comenzii");
         String idClient = request.getParameter("id_client");
         String statutComanda = request.getParameter("statut_comanda");
 
         try {
-            // Utilizează ComenziFilter pentru a filtra comenzile
+            // Use ComenziFilter to filter orders
             ComenziFilter filter = new ComenziFilter();
             ResultSet rs = filter.filterComenzi(idComanda, dataComenzii, idClient, null, null, null, null, statutComanda, null, null, null, null);
 
-            // Pasăm rezultatul către JSP
+            // Forward results to JSP
             request.setAttribute("resultSet", rs);
             request.getRequestDispatcher("comenzi.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("comenzi.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("comenzi.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -71,27 +71,27 @@ public class ComenziServlet extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (deleteId != null && !deleteId.isEmpty()) {
-                // Ștergerea unei comenzi
+                // Deleterea unei comenzi
                 deleteComanda(connection, deleteId, response);
             } else if (dataComenzii != null && idClient != null && idFurnizor != null && idAngajat != null
                     && idMaterial != null && totalComanda != null && statutComanda != null && tipComanda != null
                     && cantitate != null && pretTotal != null && idTransportator != null) {
 
                 if (idParam != null && !idParam.isEmpty()) {
-                    // Actualizare comandă
+                    // Update order
                     updateComanda(connection, idParam, dataComenzii, idClient, idFurnizor, idAngajat,
                             idMaterial, totalComanda, statutComanda, tipComanda, cantitate, pretTotal, idTransportator, response);
                 } else {
-                    // Adăugare comandă nouă
+                    // Add a new order
                     addComanda(connection, dataComenzii, idClient, idFurnizor, idAngajat, idMaterial,
                             totalComanda, statutComanda, tipComanda, cantitate, pretTotal, idTransportator, response);
                 }
             } else {
-                response.sendRedirect("comenzi.jsp?status=error&message=Datele nu sunt complete!");
+                response.sendRedirect("comenzi.jsp?status=error&message=The submitted data is incomplete!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("comenzi.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("comenzi.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -101,9 +101,9 @@ public class ComenziServlet extends HttpServlet {
             pstmt.setInt(1, Integer.parseInt(deleteId));
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
-                response.sendRedirect("comenzi.jsp?status=success&message=Comanda ștearsă cu succes!");
+                response.sendRedirect("comenzi.jsp?status=success&message=Order deleted successfully!");
             } else {
-                response.sendRedirect("comenzi.jsp?status=error&message=Nu s-a găsit comanda pentru ștergere.");
+                response.sendRedirect("comenzi.jsp?status=error&message=No order was found for deletion.");
             }
         }
     }
@@ -129,7 +129,7 @@ public class ComenziServlet extends HttpServlet {
             pstmt.setInt(11, Integer.parseInt(idTransportator));
             pstmt.setInt(12, Integer.parseInt(idParam));
             pstmt.executeUpdate();
-            response.sendRedirect("comenzi.jsp?status=success&message=Comanda actualizată cu succes!");
+            response.sendRedirect("comenzi.jsp?status=success&message=Order updated successfully!");
         }
     }
 
@@ -153,7 +153,7 @@ public class ComenziServlet extends HttpServlet {
             pstmt.setDouble(10, Double.parseDouble(pretTotal));
             pstmt.setInt(11, Integer.parseInt(idTransportator));
             pstmt.executeUpdate();
-            response.sendRedirect("comenzi.jsp?status=success&message=Comanda adăugată cu succes!");
+            response.sendRedirect("comenzi.jsp?status=success&message=Order added successfully!");
         }
     }
 
@@ -168,7 +168,7 @@ public class ComenziServlet extends HttpServlet {
                 exportToPDF(rs, response);
             }
         } catch (Exception e) {
-            response.sendRedirect("comenzi.jsp?status=error&message=Eroare la export: " + e.getMessage());
+            response.sendRedirect("comenzi.jsp?status=error&message=Export error: " + e.getMessage());
         }
     }
 
@@ -204,7 +204,7 @@ public class ComenziServlet extends HttpServlet {
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        document.add(new Paragraph("Lista Comenzi\n\n"));
+        document.add(new Paragraph("Order List\n\n"));
 
         PdfPTable table = new PdfPTable(12);
         table.addCell("ID");
@@ -216,8 +216,8 @@ public class ComenziServlet extends HttpServlet {
         table.addCell("Total");
         table.addCell("Statut");
         table.addCell("Tip");
-        table.addCell("Cantitate");
-        table.addCell("Preț Total");
+        table.addCell("Quantity");
+        table.addCell("Total Price");
         table.addCell("ID Transportator");
 
         while (rs.next()) {

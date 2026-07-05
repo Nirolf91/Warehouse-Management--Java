@@ -4,13 +4,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestionare Evaluări</title>
+    <title>Review Management</title>
     <style>
-   /* Stilizare câmpuri text și alte input-uri */
+   /* Text-field and input styling */
    input[type="text"], input[type="number"], input[type="date"], select {
-       width: calc(30% - 10px); /* Ajustează dimensiunea pe baza spațiului */
+       width: calc(30% - 10px); /* Adjusts the size based on available space */
        margin: 5px 0;
-       padding: 10px; /* Padding consistent pentru toate câmpurile */
+       padding: 10px; /* Consistent padding for all fields */
        font-size: 14px;
        border: 1px solid #ccc;
        border-radius: 5px;
@@ -62,7 +62,7 @@
        font-weight: bold;
        padding: 12px;
        text-align: center; /* Centrare text pentru titlurile coloanelor */
-       vertical-align: middle; /* Asigură centrare pe verticală */
+       vertical-align: middle; /* Ensures vertical centering */
    }
 
    td {
@@ -127,7 +127,7 @@
         }
 
         function confirmDelete() {
-            if (confirm("Sigur doriți să ștergeți această evaluare?")) {
+            if (confirm("Are you sure you want to delete this review?")) {
                 document.getElementById("deleteForm").submit();
             }
         }
@@ -135,32 +135,32 @@
 </head>
 <body>
     <div class="container">
-        <h2>Gestionare Evaluări</h2>
+        <h2>Review Management</h2>
 
-        <!-- Formular pentru Adăugare/Actualizare -->
+        <!-- Add/Update form -->
         <form action="evaluari" method="post">
-            <label for="id">ID Evaluare:</label>
-            <input type="number" name="id" id="id" placeholder="ID (opțional)"><br>
+            <label for="id">Review ID:</label>
+            <input type="number" name="id" id="id" placeholder="ID (optional)"><br>
             <label for="id_client">ID Client:</label>
             <input type="number" name="id_client" id="id_client" required><br>
-            <label for="scor">Scor:</label>
+            <label for="scor">Score:</label>
             <input type="number" name="scor" id="scor" required><br>
             <label for="feedback">Feedback:</label>
             <input type="text" name="feedback" id="feedback" required><br>
-            <label for="data">Data Evaluării:</label>
+            <label for="data">Review Date:</label>
             <input type="date" name="data_evaluarii" id="data" required><br>
-            <input type="submit" value="Adaugă / Actualizează">
+            <input type="submit" value="Add / Update">
         </form>
 
-        <!-- Formular pentru Ștergere -->
+        <!-- Delete form -->
         <form action="evaluari" method="post" id="deleteForm">
             <input type="hidden" name="delete" id="deleteId">
-            <button type="button" onclick="confirmDelete()">Șterge</button>
+            <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
-        <!-- Formular pentru Export -->
+        <!-- Export form -->
         <form action="evaluari" method="get">
-            <label for="exportFormat">Exportă datele în format:</label>
+            <label for="exportFormat">Export data as:</label>
             <select name="export" id="exportFormat">
                 <option value="csv">CSV</option>
                 <option value="pdf">PDF</option>
@@ -168,19 +168,19 @@
             <button type="submit">Export</button>
         </form>
 
-        <!-- Formular pentru Filtrare -->
+        <!-- Filter form -->
         <form action="evaluari.jsp" method="get">
-            <label for="idFilter">ID Evaluare:</label>
+            <label for="idFilter">Review ID:</label>
             <input type="text" name="id" id="idFilter">
             <label for="idClientFilter">ID Client:</label>
             <input type="text" name="id_client" id="idClientFilter">
-            <label for="scorFilter">Scor:</label>
+            <label for="scorFilter">Score:</label>
             <input type="text" name="scor" id="scorFilter">
             <label for="feedbackFilter">Feedback:</label>
             <input type="text" name="feedback" id="feedbackFilter">
-            <label for="dataFilter">Data Evaluării:</label>
+            <label for="dataFilter">Review Date:</label>
             <input type="date" name="data_evaluarii" id="dataFilter">
-            <button type="submit">Filtrează</button>
+            <button type="submit">Filter</button>
         </form>
 
         <!-- Mesaje de eroare/succes -->
@@ -194,8 +194,8 @@
             <div class="error"><%= message %></div>
         <% } %>
 
-        <!-- Tabel pentru afișarea evaluărilor -->
-        <h2>Lista Evaluări</h2>
+        <!-- Review table -->
+        <h2>Review List</h2>
         <table>
             <thead>
                 <tr>
@@ -203,7 +203,7 @@
                     <th onclick="sortTable(1)">ID Client</th>
                     <th onclick="sortTable(2)">Scor</th>
                     <th onclick="sortTable(3)">Feedback</th>
-                    <th onclick="sortTable(4)">Data Evaluării</th>
+                    <th onclick="sortTable(4)">Review Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -247,7 +247,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="5" class="error">Eroare: <%= e.getMessage() %></td>
+                    <td colspan="5" class="error">Error: <%= e.getMessage() %></td>
                 </tr>
                 <%
                     }
@@ -256,9 +256,9 @@
         </table>
 
 
-<!-- Secțiunea pentru grafic -->
+<!-- Chart section -->
 <div id="graficEvaluari" style="width: 800px; margin: auto;">
-    <h2>Grafic Evaluări</h2>
+    <h2>Review Chart</h2>
     <canvas id="chartEvaluari" width="800" height="400"></canvas>
 </div>
 
@@ -267,16 +267,16 @@
 
 <script>
     function afiseazaGraficEvaluari() {
-        // Apelează servlet-ul pentru datele graficului
+        // Calls the chart data servlet
         fetch('graficEvaluari')
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Eroare la obținerea datelor pentru grafic.');
+                    throw new Error('Error retrieving chart data.');
                 }
                 return response.json();
             })
             .then(data => {
-                console.log(data); // Debugging: afișăm datele obținute în consolă
+                console.log(data); // Debugging: prints retrieved data to the console
                 const idEvaluare = data.map(item => item.id_evaluare);
                 const scor = data.map(item => item.scor);
 
@@ -299,7 +299,7 @@
                         plugins: {
                             title: {
                                 display: true,
-                                text: 'Evoluția Scorului pentru Evaluări'
+                                text: 'Review Score Trend'
                             }
                         },
                         scales: {
@@ -321,19 +321,19 @@
                 });
             })
             .catch(error => {
-                console.error('Eroare:', error);
-                alert('A apărut o eroare la afișarea graficului.');
+                console.error('Error:', error);
+                alert('An error occurred while displaying the chart.');
             });
     }
 
-    // Apelează funcția pentru afișarea graficului când pagina este încărcată
+    // Calls the chart display function when the page loads
     window.onload = afiseazaGraficEvaluari;
 </script>
         });
             })
             .catch(error => {
-                console.error('Eroare:', error);
-                alert('A apărut o eroare la afișarea graficului.');
+                console.error('Error:', error);
+                alert('An error occurred while displaying the chart.');
             });
     }
 

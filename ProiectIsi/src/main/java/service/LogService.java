@@ -17,7 +17,7 @@ public class LogService {
             pstmt.setString(4, comandaSQL);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); // Pentru debugging, se poate înlocui cu un sistem de logare extern
+            e.printStackTrace(); // For debugging; can be replaced with an external logging system
         }
     }
 }

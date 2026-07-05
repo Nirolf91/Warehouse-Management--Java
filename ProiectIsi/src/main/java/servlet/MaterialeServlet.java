@@ -33,7 +33,7 @@ public class MaterialeServlet extends HttpServlet {
             return;
         }
 
-        // Filtrare materiale cu MaterialeFilter
+        // Filter materials with MaterialeFilter
         String idParam = request.getParameter("id");
         String nume = request.getParameter("nume");
         String descriere = request.getParameter("descriere");
@@ -45,12 +45,12 @@ public class MaterialeServlet extends HttpServlet {
             MaterialeFilter filter = new MaterialeFilter();
             ResultSet rs = filter.filterMateriale(idParam, nume, descriere, cantitate, pret, idFurnizor);
 
-            // Pasăm datele către JSP
+            // Forward data to JSP
             request.setAttribute("resultSet", rs);
             request.getRequestDispatcher("materiale.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("materiale.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("materiale.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -71,35 +71,35 @@ public class MaterialeServlet extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (deleteId != null && !deleteId.isEmpty()) {
-                // Ștergere material
+                // Delete material
                 String deleteQuery = "DELETE FROM Materiale WHERE ID_MATERIAL = ?";
                 try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
                     pstmt.setInt(1, Integer.parseInt(deleteId));
                     int rowsDeleted = pstmt.executeUpdate();
 
-                    LogService.logAction(utilizator, rol, "Ștergere material", deleteQuery);
+                    LogService.logAction(utilizator, rol, "Delete material", deleteQuery);
 
                     response.sendRedirect(rowsDeleted > 0 ?
-                            "materiale.jsp?status=success&message=Material șters cu succes!" :
-                            "materiale.jsp?status=error&message=Nu s-a găsit materialul pentru ștergere.");
+                            "materiale.jsp?status=success&message=Material deleted successfully!" :
+                            "materiale.jsp?status=error&message=No material was found for deletion.");
                     return;
                 }
             }
 
-            // Validare câmpuri
+            // Validate fields
             if (nume == null || nume.trim().isEmpty() ||
                     descriere == null || descriere.trim().isEmpty() ||
                     cantitate == null || cantitate.trim().isEmpty() ||
                     pret == null || pret.trim().isEmpty() ||
                     idFurnizor == null || idFurnizor.trim().isEmpty()) {
-                response.sendRedirect("materiale.jsp?status=error&message=Datele nu sunt complete sau incorecte!");
+                response.sendRedirect("materiale.jsp?status=error&message=The submitted data is incomplete or invalid!");
                 return;
             }
 
 
-            // Operație INSERT sau UPDATE
+            // INSERT or UPDATE operation
             if (idMaterial != null && !idMaterial.isEmpty()) {
-                // Actualizare material
+                // Update material
                 String updateQuery = "UPDATE Materiale SET NUME = ?, DESCRIERE = ?, CANTITATE_IN_STOC = ?, PRET_UNITAR = ?, ID_FURNIZOR = ? WHERE ID_MATERIAL = ?";
                 try (PreparedStatement pstmt = connection.prepareStatement(updateQuery)) {
                     pstmt.setString(1, nume);
@@ -110,9 +110,9 @@ public class MaterialeServlet extends HttpServlet {
                     pstmt.setInt(6, Integer.parseInt(idMaterial));
                     pstmt.executeUpdate();
 
-                    LogService.logAction(utilizator, rol, "Actualizare material", updateQuery);
+                    LogService.logAction(utilizator, rol, "Update material", updateQuery);
 
-                    response.sendRedirect("materiale.jsp?status=success&message=Material actualizat cu succes!");
+                    response.sendRedirect("materiale.jsp?status=success&message=Material updated successfully!");
                     return;
                 }
             } else {
@@ -126,17 +126,17 @@ public class MaterialeServlet extends HttpServlet {
                     pstmt.setDouble(4, Double.parseDouble(pret));
                     pstmt.setInt(5, Integer.parseInt(idFurnizor));
                     pstmt.executeUpdate();
-                    response.sendRedirect("materiale.jsp?status=success&message=Material adăugat cu succes!");
+                    response.sendRedirect("materiale.jsp?status=success&message=Material added successfully!");
                     return;
                 }
 
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            response.sendRedirect("materiale.jsp?status=error&message=Format numeric invalid!");
+            response.sendRedirect("materiale.jsp?status=error&message=Invalid numeric format!");
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("materiale.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("materiale.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -160,7 +160,7 @@ public class MaterialeServlet extends HttpServlet {
                 exportToPDF(rs, response);
             }
         } catch (Exception e) {
-            response.sendRedirect("materiale.jsp?status=error&message=Eroare la export: " + e.getMessage());
+            response.sendRedirect("materiale.jsp?status=error&message=Export error: " + e.getMessage());
         }
     }
 
@@ -189,14 +189,14 @@ public class MaterialeServlet extends HttpServlet {
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        document.add(new Paragraph("Lista Materiale\n\n"));
+        document.add(new Paragraph("Material List\n\n"));
 
         PdfPTable table = new PdfPTable(6);
         table.addCell("ID Material");
-        table.addCell("Nume");
+        table.addCell("Name");
         table.addCell("Descriere");
-        table.addCell("Cantitate în Stoc");
-        table.addCell("Preț Unitar");
+        table.addCell("Stock Quantity");
+        table.addCell("Unit Price");
         table.addCell("ID Furnizor");
 
         while (rs.next()) {
@@ -211,4 +211,3 @@ public class MaterialeServlet extends HttpServlet {
         document.close();
     }
 }
-

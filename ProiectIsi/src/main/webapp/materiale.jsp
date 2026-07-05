@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestionare Materiale</title>
+    <title>Material Management</title>
     <style>
        input[type="submit"], button, select {
            margin-top: 10px;
@@ -115,7 +115,7 @@
         }
 
         function confirmDelete() {
-            if (confirm("Sigur doriți să ștergeți acest material?")) {
+            if (confirm("Are you sure you want to delete this material?")) {
                 document.getElementById("deleteForm").submit();
             }
         }
@@ -123,34 +123,34 @@
 </head>
 <body>
     <div class="container">
-        <h2>Gestionare Materiale</h2>
+        <h2>Material Management</h2>
 
-        <!-- Formular pentru Adăugare/Actualizare -->
+        <!-- Add/Update form -->
         <form action="materiale" method="post">
             <label for="id">ID:</label>
-            <input type="number" name="id" id="id" placeholder="ID (opțional)"><br>
-            <label for="nume">Nume:</label>
+            <input type="number" name="id" id="id" placeholder="ID (optional)"><br>
+            <label for="nume">Name:</label>
             <input type="text" name="nume" id="nume" required><br>
             <label for="descriere">Descriere:</label>
             <input type="text" name="descriere" id="descriere" required><br>
-            <label for="cantitate">Cantitate în stoc:</label>
+            <label for="cantitate">Stock Quantity:</label>
             <input type="number" name="cantitate" id="cantitate" required><br>
-            <label for="pret">Preț Unitar:</label>
+            <label for="pret">Unit Price:</label>
             <input type="number" step="0.01" name="pret" id="pret" required><br>
             <label for="idFurnizor">ID Furnizor:</label>
             <input type="number" name="idFurnizor" id="idFurnizor" required><br>
-            <input type="submit" value="Adaugă / Actualizează">
+            <input type="submit" value="Add / Update">
         </form>
 
-        <!-- Formular pentru Ștergere -->
+        <!-- Delete form -->
         <form action="materiale" method="post" id="deleteForm">
             <input type="hidden" name="delete" id="deleteId">
-            <button type="button" onclick="confirmDelete()">Șterge</button>
+            <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
-        <!-- Formular pentru Export -->
+        <!-- Export form -->
         <form action="materiale" method="post">
-            <label for="exportFormat">Exportă datele în format:</label>
+            <label for="exportFormat">Export data as:</label>
             <select name="export" id="exportFormat">
                 <option value="csv">CSV</option>
                 <option value="pdf">PDF</option>
@@ -158,33 +158,33 @@
             <button type="submit">Export</button>
         </form>
 
-        <!-- Formular pentru Filtrare -->
+        <!-- Filter form -->
         <form action="materiale.jsp" method="get">
             <label for="idFilter">ID:</label>
             <input type="text" name="id" id="idFilter">
-            <label for="numeFilter">Nume:</label>
+            <label for="numeFilter">Name:</label>
             <input type="text" name="nume" id="numeFilter">
             <label for="descriereFilter">Descriere:</label>
             <input type="text" name="descriere" id="descriereFilter">
-            <label for="cantitateFilter">Cantitate:</label>
+            <label for="cantitateFilter">Quantity:</label>
             <input type="text" name="cantitate" id="cantitateFilter">
-            <label for="pretFilter">Preț:</label>
+            <label for="pretFilter">Price:</label>
             <input type="text" name="pret" id="pretFilter">
             <label for="idFurnizorFilter">ID Furnizor:</label>
             <input type="text" name="idFurnizor" id="idFurnizorFilter">
-            <button type="submit">Filtrează</button>
+            <button type="submit">Filter</button>
         </form>
 
-        <!-- Tabel pentru afișarea materialelor -->
-        <h2>Lista Materiale</h2>
+        <!-- Material table -->
+        <h2>Material List</h2>
         <table>
             <thead>
                 <tr>
                     <th onclick="sortTable(0)">ID</th>
-                    <th onclick="sortTable(1)">Nume</th>
+                    <th onclick="sortTable(1)">Name</th>
                     <th onclick="sortTable(2)">Descriere</th>
-                    <th onclick="sortTable(3)">Cantitate în Stoc</th>
-                    <th onclick="sortTable(4)">Preț Unitar</th>
+                    <th onclick="sortTable(3)">Stock Quantity</th>
+                    <th onclick="sortTable(4)">Unit Price</th>
                     <th onclick="sortTable(5)">ID Furnizor</th>
                 </tr>
             </thead>
@@ -232,7 +232,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="6" class="error">Eroare: <%= e.getMessage() %></td>
+                    <td colspan="6" class="error">Error: <%= e.getMessage() %></td>
                 </tr>
                 <%
                     }

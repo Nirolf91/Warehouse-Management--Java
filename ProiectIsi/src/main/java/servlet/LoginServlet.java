@@ -57,9 +57,8 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("home.jsp");
         } else {
             // If login fails
-            request.setAttribute("errorMessage", "Nume utilizator sau parolă incorectă.");
+            request.setAttribute("errorMessage", "Invalid username or password.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 }
-

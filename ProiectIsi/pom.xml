@@ -39,14 +39,14 @@
             <version>2.0.0</version>
         </dependency>
 
-        <!-- iTextPDF pentru generarea de fișiere PDF -->
+        <!-- iTextPDF for generating PDF files -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version>
         </dependency>
 
-        <!-- Gson pentru generarea datelor în format JSON -->
+        <!-- Gson for generating JSON data -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

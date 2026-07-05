@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestionare Comenzi</title>
+    <title>Order Management</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -131,7 +131,7 @@
         }
 
         function confirmDelete() {
-            if (confirm("Sigur doriți să ștergeți această comandă?")) {
+            if (confirm("Are you sure you want to delete this order?")) {
                 document.getElementById("deleteForm").submit();
             }
         }
@@ -139,14 +139,14 @@
 </head>
 <body>
     <div class="container">
-        <h2>Gestionare Comenzi</h2>
+        <h2>Order Management</h2>
 
         <!-- Form for Add/Update -->
         <form action="comenzi" method="post">
             <input type="hidden" name="action" value="addOrUpdate">
-            <label for="id">ID Comandă:</label>
-            <input type="number" name="id" id="id" placeholder="ID (opțional pentru Adăugare)"><br>
-            <label for="data_comenzii">Data Comenzii:</label>
+            <label for="id">Order ID:</label>
+            <input type="number" name="id" id="id" placeholder="ID (optional for add)"><br>
+            <label for="data_comenzii">Order Date:</label>
             <input type="date" name="data_comenzii" id="data_comenzii" required><br>
             <label for="id_client">ID Client:</label>
             <input type="number" name="id_client" id="id_client" required><br>
@@ -156,35 +156,35 @@
             <input type="number" name="id_angajat" id="id_angajat" required><br>
             <label for="id_material">ID Material:</label>
             <input type="number" name="id_material" id="id_material" required><br>
-            <label for="total_comanda">Total Comandă:</label>
+            <label for="total_comanda">Order Total:</label>
             <input type="text" name="total_comanda" id="total_comanda" required><br>
-            <label for="statut_comanda">Statut Comandă:</label>
+            <label for="statut_comanda">Order Status:</label>
             <input type="text" name="statut_comanda" id="statut_comanda" required><br>
-            <label for="tip_comanda">Tip Comandă:</label>
+            <label for="tip_comanda">Order Type:</label>
             <input type="text" name="tip_comanda" id="tip_comanda" required><br>
-            <label for="cantitate">Cantitate:</label>
+            <label for="cantitate">Quantity:</label>
             <input type="number" name="cantitate" id="cantitate" required><br>
-            <label for="pret_total">Preț Total:</label>
+            <label for="pret_total">Total Price:</label>
             <input type="text" name="pret_total" id="pret_total" required><br>
             <label for="id_transportator">ID Transportator:</label>
             <input type="number" name="id_transportator" id="id_transportator" required><br>
-            <input type="submit" value="Adaugă / Actualizează">
+            <input type="submit" value="Add / Update">
         </form>
 
         <!-- Form for Delete -->
         <form action="comenzi" method="post" id="deleteForm">
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" id="deleteId">
-            <button type="button" onclick="confirmDelete()">Șterge</button>
+            <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
         <!-- Filter Form -->
         <form action="comenzi.jsp" method="get">
-            <label>ID Comandă:</label><input type="text" name="id">
-            <label>Data Comenzii:</label><input type="date" name="data_comenzii">
+            <label>Order ID:</label><input type="text" name="id">
+            <label>Order Date:</label><input type="date" name="data_comenzii">
             <label>ID Client:</label><input type="text" name="id_client">
             <label>Statut:</label><input type="text" name="statut_comanda">
-            <button type="submit">Filtrează</button>
+            <button type="submit">Filter</button>
         </form>
 
         <!-- Export Options -->
@@ -198,12 +198,12 @@
         </form>
 
      <!-- Orders Table -->
-            <h2>Lista Comenzi</h2>
+            <h2>Order List</h2>
         <table>
             <thead>
                 <tr>
                     <th onclick="sortTable(0)">ID</th>
-                    <th onclick="sortTable(1)">Data Comenzii</th>
+                    <th onclick="sortTable(1)">Order Date</th>
                     <th onclick="sortTable(2)">ID Client</th>
                     <th onclick="sortTable(3)">ID Furnizor</th>
                     <th onclick="sortTable(4)">ID Angajat</th>
@@ -211,8 +211,8 @@
                     <th onclick="sortTable(6)">Total</th>
                     <th onclick="sortTable(7)">Statut</th>
                     <th onclick="sortTable(8)">Tip</th>
-                    <th onclick="sortTable(9)">Cantitate</th>
-                    <th onclick="sortTable(10)">Preț Total</th>
+                    <th onclick="sortTable(9)">Quantity</th>
+                    <th onclick="sortTable(10)">Total Price</th>
                     <th onclick="sortTable(11)">ID Transportator</th>
                 </tr>
             </thead>
@@ -254,7 +254,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="12" class="error">Eroare SQL: <%= e.getMessage() %></td>
+                    <td colspan="12" class="error">SQL error: <%= e.getMessage() %></td>
                 </tr>
                 <%
                     }
@@ -262,16 +262,16 @@
             </tbody>
         </table>
 
-<!-- Grafic pentru distribuția comenzilor -->
+<!-- Order distribution chart -->
 <div id="graficComenzi" class="tab" style="width: 600px; height: 400px; margin: auto;">
-    <h2>Grafic Comenzi</h2>
+    <h2>Order Chart</h2>
     <canvas id="chartComenzi"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function afiseazaGraficComenzi() {
-        fetch('graficComenzi') // Apelează servlet-ul pentru datele graficului
+        fetch('graficComenzi') // Calls the chart data servlet
             .then(response => response.json())
             .then(data => {
                 const tipuriComenzi = data.map(item => item.tip_comanda);
@@ -283,7 +283,7 @@
                     data: {
                         labels: tipuriComenzi,
                         datasets: [{
-                            label: 'Număr de Comenzi',
+                            label: 'Number of Orders',
                             data: numarComenzi,
                             backgroundColor: 'rgba(54, 162, 235, 0.6)'
                         }]
@@ -299,10 +299,10 @@
                     }
                 });
             })
-            .catch(error => console.error('Eroare la încărcarea datelor pentru grafic:', error));
+            .catch(error => console.error('Error loading chart data:', error));
     }
 
-    // Afișează graficul când se încarcă pagina
+    // Display the chart when the page loads
     window.onload = afiseazaGraficComenzi;
 </script>
 

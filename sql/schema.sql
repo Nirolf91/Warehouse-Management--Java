@@ -195,8 +195,8 @@ END;
 INSERT INTO Utilizatori (UTILIZATOR, PAROLA, ROL) VALUES ('admin', 'admin123', 'admin');
 INSERT INTO Utilizatori (UTILIZATOR, PAROLA, ROL) VALUES ('user', 'user123', 'user');
 
-INSERT INTO Angajati (NUME, FUNCTIE, DATE_DE_CONTACT) VALUES ('Popescu Andrei', 'Manager depozit', 'andrei.popescu@example.com');
-INSERT INTO Angajati (NUME, FUNCTIE, DATE_DE_CONTACT) VALUES ('Ionescu Maria', 'Operator stoc', 'maria.ionescu@example.com');
+INSERT INTO Angajati (NUME, FUNCTIE, DATE_DE_CONTACT) VALUES ('Popescu Andrei', 'Warehouse Manager', 'andrei.popescu@example.com');
+INSERT INTO Angajati (NUME, FUNCTIE, DATE_DE_CONTACT) VALUES ('Ionescu Maria', 'Stock Operator', 'maria.ionescu@example.com');
 
 INSERT INTO Clienti (NUME, ADRESA, CONTACT) VALUES ('Construct Plus SRL', 'Bucuresti, Str. Industriei 10', 'contact@constructplus.ro');
 INSERT INTO Clienti (NUME, ADRESA, CONTACT) VALUES ('Renovari Expert SRL', 'Cluj-Napoca, Str. Fabricii 7', 'office@renovari-expert.ro');
@@ -208,20 +208,20 @@ INSERT INTO Transportatori (NUME, CONTACT, PRET_PE_KG) VALUES ('Rapid Cargo', 'r
 INSERT INTO Transportatori (NUME, CONTACT, PRET_PE_KG) VALUES ('TransDepo', 'transdepo@example.com', 1.10);
 
 INSERT INTO Materiale (ID_MATERIAL, NUME, DESCRIERE, CANTITATE_IN_STOC, PRET_UNITAR, ID_FURNIZOR)
-VALUES (materiale_seq.NEXTVAL, 'Ciment', 'Saci ciment 40kg', 250, 32.50, 1);
+VALUES (materiale_seq.NEXTVAL, 'Ciment', '40kg cement bags', 250, 32.50, 1);
 INSERT INTO Materiale (ID_MATERIAL, NUME, DESCRIERE, CANTITATE_IN_STOC, PRET_UNITAR, ID_FURNIZOR)
-VALUES (materiale_seq.NEXTVAL, 'Grinzi lemn', 'Grinzi pentru structuri usoare', 80, 115.00, 2);
+VALUES (materiale_seq.NEXTVAL, 'Grinzi lemn', 'Beams for light structures', 80, 115.00, 2);
 
 INSERT INTO Evaluari (ID_EVALUARE, ID_CLIENT, SCOR, FEEDBACK, DATA_EVALUARII)
-VALUES (evaluare_seq.NEXTVAL, 1, 5, 'Livrare rapida si materiale conforme.', SYSDATE);
+VALUES (evaluare_seq.NEXTVAL, 1, 5, 'Fast delivery and compliant materials.', SYSDATE);
 INSERT INTO Evaluari (ID_EVALUARE, ID_CLIENT, SCOR, FEEDBACK, DATA_EVALUARII)
-VALUES (evaluare_seq.NEXTVAL, 2, 4, 'Comanda procesata corect.', SYSDATE);
+VALUES (evaluare_seq.NEXTVAL, 2, 4, 'Order processed correctly.', SYSDATE);
 
 INSERT INTO Comenzi (
     ID_COMANDA, DATA_COMENZII, ID_CLIENT, ID_FURNIZOR, ID_ANGAJAT, ID_MATERIAL,
     TOTAL_COMANDA, STATUT_COMANDA, TIP_COMANDA, CANTITATE, PRET_TOTAL, ID_TRANSPORTATOR
 ) VALUES (
-    comanda_seq.NEXTVAL, SYSDATE, 1, 1, 1, 1, 325.00, 'Procesata', 'Achizitie', 10, 325.00, 1
+    comanda_seq.NEXTVAL, SYSDATE, 1, 1, 1, 1, 325.00, 'Processed', 'Purchase', 10, 325.00, 1
 );
 
 COMMIT;

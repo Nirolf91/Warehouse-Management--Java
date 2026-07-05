@@ -18,7 +18,7 @@ public class DatabaseConnection {
                     getConfigValue("WAREHOUSE_DB_PASSWORD", "warehouse.db.password", DEFAULT_DB_PASSWORD)
             );
         } catch (ClassNotFoundException e) {
-            throw new SQLException("Driverul JDBC Oracle nu a fost găsit.", e);
+            throw new SQLException("Oracle JDBC driver was not found.", e);
         }
     }
 

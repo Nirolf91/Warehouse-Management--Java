@@ -1,5 +1,5 @@
 /* styles.css */
-/* Stiluri pentru formularul de filtrare */
+/* Styles for the filter form */
 .filter-form {
     display: flex;
     flex-wrap: wrap;
@@ -15,7 +15,7 @@
 }
 
 .filter-input {
-    width: 120px; /* Dimensiune mică pentru câmpurile de filtrare */
+    width: 120px; /* Compact filter field width */
     padding: 2px 4px;
     font-size: 12px;
     margin-right: 10px;
@@ -38,5 +38,3 @@ button.filter-button {
     height: auto;
     border-radius: 8px;
 }
-
-

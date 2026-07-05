@@ -1,5 +1,5 @@
 /* styles.css */
-/* Stiluri pentru formularul de filtrare */
+/* Styles for the filter form */
 .filter-form {
     display: flex;
     flex-wrap: wrap;
@@ -15,7 +15,7 @@
 }
 
 .filter-input {
-    width: 120px; /* Dimensiune mică pentru câmpurile de filtrare */
+    width: 120px; /* Compact filter field width */
     padding: 2px 4px;
     font-size: 12px;
     margin-right: 10px;
@@ -39,9 +39,9 @@ button.filter-button {
     border-radius: 8px;
 }
 
-/* Stiluri pentru imaginea de fundal */
+/* Background image styles */
 body {
-    background-image: url('static/warehouse1.jpg'); /* Calea către imaginea de fundal */
+    background-image: url('static/warehouse1.jpg'); /* Path to the background image */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -49,7 +49,7 @@ body {
     padding: 0;
 }
 
-/* Stiluri pentru containerul formularului */
+/* Form container styles */
 .login-container {
     background: rgba(255, 255, 255, 0.9); /* Fundal semi-transparent */
     padding: 20px;
@@ -58,8 +58,8 @@ body {
 }
 <style>
     .image-container img {
-        display: block; /* Elimină spațiile nedorite */
-        width: 100%; /* Imaginea va ocupa 100% din lățime */
-        height: auto; /* Păstrează proporțiile imaginii */
+        display: block; /* Removes unwanted spacing */
+        width: 100%; /* The image takes the full width */
+        height: auto; /* Preserves image proportions */
     }
 </style>

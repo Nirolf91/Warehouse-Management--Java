@@ -4,13 +4,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestionare Furnizori</title>
+    <title>Supplier Management</title>
 <style>
-    /* Stilizare câmpuri text și alte input-uri pentru dimensiuni similare */
+    /* Text-field and input styling pentru dimensiuni similare */
     input[type="text"], input[type="number"], input[type="date"], select {
-        width: calc(30% - 10px); /* Ajustează dimensiunea pe baza spațiului */
+        width: calc(30% - 10px); /* Adjusts the size based on available space */
         margin: 5px 0;
-        padding: 10px; /* Padding consistent pentru toate câmpurile */
+        padding: 10px; /* Consistent padding for all fields */
         font-size: 14px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -45,7 +45,7 @@
         background-color: #c9302c;
     }
 
-    /* Formularul pentru export */
+    /* Export form */
     .filter-input {
         width: calc(30% - 10px);
         padding: 10px;
@@ -100,7 +100,7 @@
         let selectedRow = null;
         let sortOrder = {};
 
-        // Funcție pentru selectarea unui rând
+        // Selects a row
         function selectRow(row) {
             if (selectedRow) selectedRow.classList.remove('selected');
             selectedRow = row;
@@ -113,7 +113,7 @@
             document.getElementById("deleteId").value = row.cells[0].innerText;
         }
 
-        // Funcție pentru sortare
+        // Sort function
         function sortTable(columnIndex) {
             const table = document.querySelector("table tbody");
             const rows = Array.from(table.rows);
@@ -135,9 +135,9 @@
             rows.forEach(row => table.appendChild(row));
         }
 
-        // Funcție pentru confirmarea ștergerii
+        // Delete confirmation function
         function confirmDelete() {
-            if (confirm("Sigur doriți să ștergeți acest furnizor?")) {
+            if (confirm("Are you sure you want to delete this supplier?")) {
                 document.getElementById("deleteForm").submit();
             }
         }
@@ -145,30 +145,30 @@
 </head>
 <body>
     <div class="container">
-        <h2>Gestionare Furnizori</h2>
+        <h2>Supplier Management</h2>
 
-        <!-- Formular pentru Adăugare/Actualizare -->
+        <!-- Add/Update form -->
         <form action="furnizori" method="post">
             <label for="id">ID:</label>
-            <input type="number" name="id" id="id" placeholder="ID (opțional)"><br>
-            <label for="nume">Nume:</label>
+            <input type="number" name="id" id="id" placeholder="ID (optional)"><br>
+            <label for="nume">Name:</label>
             <input type="text" name="nume" id="nume" required><br>
-            <label for="adresa">Adresă:</label>
+            <label for="adresa">Address:</label>
             <input type="text" name="adresa" id="adresa" required><br>
             <label for="contact">Contact:</label>
             <input type="text" name="contact" id="contact" required><br>
-            <input type="submit" value="Adaugă / Actualizează">
+            <input type="submit" value="Add / Update">
         </form>
 
-        <!-- Formular pentru Ștergere -->
+        <!-- Delete form -->
         <form action="furnizori" method="post" id="deleteForm">
             <input type="hidden" name="delete" id="deleteId">
-            <button type="button" onclick="confirmDelete()">Șterge</button>
+            <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
-        <!-- Formular pentru Export -->
+        <!-- Export form -->
         <form action="furnizori" method="get">
-            <label for="exportFormat">Exportă datele în format:</label>
+            <label for="exportFormat">Export data as:</label>
             <select name="export" id="exportFormat">
                 <option value="csv">CSV</option>
                 <option value="pdf">PDF</option>
@@ -176,35 +176,35 @@
             <button type="submit">Export</button>
         </form>
 
-<!-- Formular pentru Filtrare -->
+<!-- Filter form -->
 <form action="furnizori.jsp" method="get" class="filter-form">
     <label for="idFilter" class="filter-label">ID:</label>
     <input type="text" name="id" id="idFilter" class="filter-input">
 
-    <label for="numeFilter" class="filter-label">Nume:</label>
+    <label for="numeFilter" class="filter-label">Name:</label>
     <input type="text" name="nume" id="numeFilter" class="filter-input">
 
-    <label for="adresaFilter" class="filter-label">Adresă:</label>
+    <label for="adresaFilter" class="filter-label">Address:</label>
     <input type="text" name="adresa" id="adresaFilter" class="filter-input">
 
     <label for="contactFilter" class="filter-label">Contact:</label>
     <input type="text" name="contact" id="contactFilter" class="filter-input">
 
-    <button type="submit" class="filter-button">Filtrează</button>
+    <button type="submit" class="filter-button">Filter</button>
 </form>
 
 
 
 
 
-        <!-- Tabel pentru afișarea furnizorilor -->
-        <h2>Lista Furnizori</h2>
+        <!-- Supplier table -->
+        <h2>Supplier List</h2>
         <table>
             <thead>
                 <tr>
                     <th onclick="sortTable(0)">ID</th>
-                    <th onclick="sortTable(1)">Nume</th>
-                    <th onclick="sortTable(2)">Adresă</th>
+                    <th onclick="sortTable(1)">Name</th>
+                    <th onclick="sortTable(2)">Address</th>
                     <th onclick="sortTable(3)">Contact</th>
                 </tr>
             </thead>
@@ -245,7 +245,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Eroare: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error: <%= e.getMessage() %></td>
                 </tr>
                 <%
                     }

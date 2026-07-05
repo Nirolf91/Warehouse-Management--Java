@@ -14,7 +14,7 @@ public class TransportatoriFilter {
         Connection connection = DatabaseConnection.getConnection();
         StringBuilder query = new StringBuilder("SELECT * FROM Transportatori WHERE 1=1");
 
-        // Adăugăm condiții de filtrare în query doar dacă parametrii sunt validați
+        // Adds filter conditions only when parameters are valid
         if (idTransportator != null && !idTransportator.isEmpty()) query.append(" AND ID_TRANSPORTATOR = ?");
         if (nume != null && !nume.isEmpty()) query.append(" AND NUME LIKE ?");
         if (contact != null && !contact.isEmpty()) query.append(" AND CONTACT LIKE ?");
@@ -23,7 +23,7 @@ public class TransportatoriFilter {
         PreparedStatement pstmt = connection.prepareStatement(query.toString());
         int index = 1;
 
-        // Populăm parametrii query-ului
+        // Binds query parameters
         if (idTransportator != null && !idTransportator.isEmpty()) pstmt.setInt(index++, Integer.parseInt(idTransportator));
         if (nume != null && !nume.isEmpty()) pstmt.setString(index++, "%" + nume + "%");
         if (contact != null && !contact.isEmpty()) pstmt.setString(index++, "%" + contact + "%");

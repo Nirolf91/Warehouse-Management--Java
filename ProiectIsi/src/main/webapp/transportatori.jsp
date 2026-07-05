@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestionare Transportatori</title>
+    <title>Carrier Management</title>
     <style>
         /* Stilizare pentru butoane */
         input[type="submit"], button, select {
@@ -55,7 +55,7 @@
 
         td {
             padding: 10px;
-            text-align: center; /* Centrare text pentru conținut */
+            text-align: center; /* Centers content text */
             color: #333;
         }
 
@@ -76,7 +76,7 @@
             background-color: #d1ecf1;
         }
 
-        /* Mesaje de eroare și succes */
+        /* Error and success messages */
         .error {
             color: red;
             text-align: center;
@@ -128,7 +128,7 @@
         }
 
         function confirmDelete() {
-            if (confirm("Sigur doriți să ștergeți acest transportator?")) {
+            if (confirm("Are you sure you want to delete this carrier?")) {
                 document.getElementById("deleteForm").submit();
             }
         }
@@ -136,41 +136,41 @@
 </head>
 <body>
     <div class="container">
-        <h2>Gestionare Transportatori</h2>
+        <h2>Carrier Management</h2>
 
-        <!-- Formular pentru Adăugare/Actualizare -->
+        <!-- Add/Update form -->
         <form action="transportatori" method="post">
             <label for="id">ID:</label>
-            <input type="number" name="id" id="id" placeholder="ID (opțional)"><br>
-            <label for="nume">Nume:</label>
+            <input type="number" name="id" id="id" placeholder="ID (optional)"><br>
+            <label for="nume">Name:</label>
             <input type="text" name="nume" id="nume" required><br>
             <label for="contact">Contact:</label>
             <input type="text" name="contact" id="contact" required><br>
-            <label for="pret">Preț pe KG:</label>
+            <label for="pret">Price per KG:</label>
             <input type="number" step="0.01" name="pret_pe_kg" id="pret" required><br>
-            <input type="submit" value="Adaugă / Actualizează">
+            <input type="submit" value="Add / Update">
         </form>
 
-        <!-- Formular pentru Ștergere -->
+        <!-- Delete form -->
         <form action="transportatori" method="post" id="deleteForm">
             <input type="hidden" name="delete" id="deleteId">
-            <button type="button" onclick="confirmDelete()">Șterge</button>
+            <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
-        <!-- Formular pentru Filtrare -->
+        <!-- Filter form -->
         <form action="transportatori.jsp" method="get">
             <label for="idFilter">ID:</label>
             <input type="text" name="id" id="idFilter" class="filter-input">
-            <label for="numeFilter">Nume:</label>
+            <label for="numeFilter">Name:</label>
             <input type="text" name="nume" id="numeFilter" class="filter-input">
             <label for="contactFilter">Contact:</label>
             <input type="text" name="contact" id="contactFilter" class="filter-input">
-            <label for="pretFilter">Preț pe KG:</label>
+            <label for="pretFilter">Price per KG:</label>
             <input type="text" name="pret_pe_kg" id="pretFilter" class="filter-input">
-            <button type="submit">Filtrează</button>
+            <button type="submit">Filter</button>
         </form>
 
-        <!-- Formular pentru Export -->
+        <!-- Export form -->
 <form action="transportatori" method="get">
     <label for="exportFormat">Export date:</label>
     <select name="export" id="exportFormat">
@@ -182,15 +182,15 @@
 
 
 
-        <!-- Tabel pentru afișarea transportatorilor -->
-        <h2>Lista Transportatori</h2>
+        <!-- Carrier table -->
+        <h2>Carrier List</h2>
         <table>
             <thead>
                 <tr>
                     <th onclick="sortTable(0)">ID</th>
-                    <th onclick="sortTable(1)">Nume</th>
+                    <th onclick="sortTable(1)">Name</th>
                     <th onclick="sortTable(2)">Contact</th>
-                    <th onclick="sortTable(3)">Preț pe KG</th>
+                    <th onclick="sortTable(3)">Price per KG</th>
                 </tr>
             </thead>
             <tbody>
@@ -230,7 +230,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Eroare la încărcarea datelor: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error loading data: <%= e.getMessage() %></td>
                 </tr>
                 <%
                     }

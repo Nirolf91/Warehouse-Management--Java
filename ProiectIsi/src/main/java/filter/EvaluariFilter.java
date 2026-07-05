@@ -31,4 +31,3 @@ public class EvaluariFilter {
         return pstmt.executeQuery();
     }
 }
-

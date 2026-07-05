@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestionare Clienți</title>
+    <title>Client Management</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -96,18 +96,18 @@
 
         .button-container {
             display: flex;
-            gap: 15px; /* Spațiu între butoane */
+            gap: 15px; /* Space between buttons */
             margin-top: 10px;
         }
 
         .button-container button,
         .button-container input[type="submit"] {
-            flex: 1; /* Opțional: pentru a face butoanele de dimensiuni egale */
+            flex: 1; /* Optional: makes buttons equal width */
         }
 
         tr.selected {
-            background-color: #d1ecf1; /* Evidențiază rândul selectat */
-            color: #333; /* Asigură lizibilitate */
+            background-color: #d1ecf1; /* Highlights the selected row */
+            color: #333; /* Ensures readability */
         }
 
     </style>
@@ -115,7 +115,7 @@
 
     <script>
         let selectedRow = null;
-        let sortOrder = {}; // Obiect pentru a urmări ordinea de sortare pe coloane
+        let sortOrder = {}; // Tracks sort order by column
 
         function selectRow(row) {
             if (selectedRow) selectedRow.classList.remove('selected');
@@ -150,7 +150,7 @@
         }
 
         function confirmDelete() {
-            if (confirm("Sigur doriți să ștergeți acest client?")) {
+            if (confirm("Are you sure you want to delete this client?")) {
                 document.getElementById("deleteForm").submit();
             }
         }
@@ -158,30 +158,30 @@
 </head>
 <body>
     <div class="container">
-        <h2>Gestionare Clienți</h2>
+        <h2>Client Management</h2>
 
-        <!-- Formular pentru Adăugare/Actualizare -->
+        <!-- Add/Update form -->
         <form action="clienti" method="post">
             <label for="id">ID:</label>
-            <input type="number" name="id" id="id" placeholder="ID (opțional)"><br>
-            <label for="nume">Nume:</label>
+            <input type="number" name="id" id="id" placeholder="ID (optional)"><br>
+            <label for="nume">Name:</label>
             <input type="text" name="nume" id="nume" required><br>
-            <label for="adresa">Adresă:</label>
+            <label for="adresa">Address:</label>
             <input type="text" name="adresa" id="adresa" required><br>
             <label for="contact">Contact:</label>
             <input type="text" name="contact" id="contact" required><br>
-            <input type="submit" value="Adaugă / Actualizează">
+            <input type="submit" value="Add / Update">
         </form>
 
-        <!-- Formular pentru Ștergere -->
+        <!-- Delete form -->
         <form action="clienti" method="post" id="deleteForm">
             <input type="hidden" name="delete" id="deleteId">
-            <button type="button" onclick="confirmDelete()">Șterge</button>
+            <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
-        <!-- Formular pentru Export -->
+        <!-- Export form -->
         <form action="clienti" method="get">
-            <label for="exportFormat">Exportă datele în format:</label>
+            <label for="exportFormat">Export data as:</label>
             <select name="export" id="exportFormat">
                 <option value="csv">CSV</option>
                 <option value="pdf">PDF</option>
@@ -189,27 +189,27 @@
             <button type="submit">Export</button>
         </form>
 
-        <!-- Formular pentru Filtrare -->
+        <!-- Filter form -->
         <form action="clienti.jsp" method="get">
             <label for="idFilter">ID:</label>
             <input type="text" name="id" id="idFilter">
-            <label for="numeFilter">Nume:</label>
+            <label for="numeFilter">Name:</label>
             <input type="text" name="nume" id="numeFilter">
-            <label for="adresaFilter">Adresă:</label>
+            <label for="adresaFilter">Address:</label>
             <input type="text" name="adresa" id="adresaFilter">
             <label for="contactFilter">Contact:</label>
             <input type="text" name="contact" id="contactFilter">
-            <button type="submit">Filtrează</button>
+            <button type="submit">Filter</button>
         </form>
 
-        <!-- Tabel pentru afișarea clienților -->
-        <h2>Lista Clienți</h2>
+        <!-- Client table -->
+        <h2>Client List</h2>
         <table>
             <thead>
                 <tr>
                     <th onclick="sortTable(0)">ID</th>
-                    <th onclick="sortTable(1)">Nume</th>
-                    <th onclick="sortTable(2)">Adresă</th>
+                    <th onclick="sortTable(1)">Name</th>
+                    <th onclick="sortTable(2)">Address</th>
                     <th onclick="sortTable(3)">Contact</th>
                 </tr>
             </thead>
@@ -250,7 +250,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Eroare: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error: <%= e.getMessage() %></td>
                 </tr>
                 <%
                     }

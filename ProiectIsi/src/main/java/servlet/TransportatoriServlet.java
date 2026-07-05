@@ -27,30 +27,30 @@ public class TransportatoriServlet extends HttpServlet {
             throws ServletException, IOException {
         String exportFormat = request.getParameter("export");
 
-        // Verificăm dacă este cerut un export
+        // Check whether export was requested
         if (exportFormat != null) {
             exportData(exportFormat, response);
             return;
         }
 
-        // Obținem parametrii pentru filtrare
+        // Read filter parameters
         String idTransportator = request.getParameter("id");
         String nume = request.getParameter("nume");
         String contact = request.getParameter("contact");
         String pretPeKg = request.getParameter("pret_pe_kg");
 
         try {
-            // Filtrăm datele folosind clasa TransportatoriFilter
+            // Filter data with TransportatoriFilter
             TransportatoriFilter filter = new TransportatoriFilter();
             ResultSet rs = filter.filterTransportatori(idTransportator, nume, contact, pretPeKg);
 
-            // Setăm rezultatele în request
+            // Store results in the request
             request.setAttribute("resultSet", rs);
             request.getRequestDispatcher("transportatori.jsp").forward(request, response);
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("transportatori.jsp?status=error&message=Eroare la filtrare: " + e.getMessage());
+            response.sendRedirect("transportatori.jsp?status=error&message=Filter error: " + e.getMessage());
         }
     }
 
@@ -71,18 +71,18 @@ public class TransportatoriServlet extends HttpServlet {
                 pretKg = Double.parseDouble(pretKgParam);
             }
         } catch (NumberFormatException e) {
-            response.sendRedirect("transportatori.jsp?status=error&message=Format invalid pentru prețul pe kg.");
+            response.sendRedirect("transportatori.jsp?status=error&message=Format invalid pentru price per kg.");
             return;
         }
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (deleteId != null && !deleteId.isEmpty()) {
-                // Ștergere transportator
+                // Deletere transportator
                 String deleteQuery = "DELETE FROM Transportatori WHERE ID_TRANSPORTATOR = ?";
                 try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
                     pstmt.setInt(1, Integer.parseInt(deleteId));
                     pstmt.executeUpdate();
-                    response.sendRedirect("transportatori.jsp?status=success&message=Transportator șters cu succes!");
+                    response.sendRedirect("transportatori.jsp?status=success&message=Carrier deleted successfully!");
                 }
             } else if (nume != null && contact != null && pretKgParam != null) {
                 if (idParam != null && !idParam.isEmpty()) {
@@ -94,25 +94,25 @@ public class TransportatoriServlet extends HttpServlet {
                         pstmt.setDouble(3, pretKg);
                         pstmt.setInt(4, Integer.parseInt(idParam));
                         pstmt.executeUpdate();
-                        response.sendRedirect("transportatori.jsp?status=success&message=Transportator actualizat cu succes!");
+                        response.sendRedirect("transportatori.jsp?status=success&message=Carrier updated successfully!");
                     }
                 } else {
-                    // Adăugare transportator nou
+                    // Add a new carrier
                     String insertQuery = "INSERT INTO Transportatori (NUME, CONTACT, PRET_PE_KG) VALUES (?, ?, ?)";
                     try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                         pstmt.setString(1, nume);
                         pstmt.setString(2, contact);
                         pstmt.setDouble(3, pretKg);
                         pstmt.executeUpdate();
-                        response.sendRedirect("transportatori.jsp?status=success&message=Transportator adăugat cu succes!");
+                        response.sendRedirect("transportatori.jsp?status=success&message=Carrier added successfully!");
                     }
                 }
             } else {
-                response.sendRedirect("transportatori.jsp?status=error&message=Datele nu sunt complete!");
+                response.sendRedirect("transportatori.jsp?status=error&message=The submitted data is incomplete!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("transportatori.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("transportatori.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -127,7 +127,7 @@ public class TransportatoriServlet extends HttpServlet {
                 exportToPDF(rs, response);
             }
         } catch (Exception e) {
-            response.sendRedirect("transportatori.jsp?status=error&message=Eroare la export: " + e.getMessage());
+            response.sendRedirect("transportatori.jsp?status=error&message=Export error: " + e.getMessage());
         }
     }
 
@@ -154,13 +154,13 @@ public class TransportatoriServlet extends HttpServlet {
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        document.add(new Paragraph("Lista Transportatori\n\n"));
+        document.add(new Paragraph("Carrier List\n\n"));
 
         PdfPTable table = new PdfPTable(4);
         table.addCell("ID Transportator");
-        table.addCell("Nume");
+        table.addCell("Name");
         table.addCell("Contact");
-        table.addCell("Preț pe Kg");
+        table.addCell("Price per Kg");
 
         while (rs.next()) {
             table.addCell(String.valueOf(rs.getInt("ID_TRANSPORTATOR")));

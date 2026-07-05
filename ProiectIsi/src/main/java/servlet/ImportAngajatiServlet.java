@@ -26,13 +26,13 @@ public class ImportAngajatiServlet extends HttpServlet {
         Part filePart = request.getPart("file");
         String fileName = filePart.getSubmittedFileName();
 
-        // Verificăm extensia fișierului
+        // Check the file extension
         if (fileName.endsWith(".csv")) {
             importFromCSV(filePart.getInputStream(), response);
         } else if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
             importFromExcel(filePart.getInputStream(), response);
         } else {
-            response.sendRedirect("angajati.jsp?status=error&message=Formatul fișierului nu este suportat!");
+            response.sendRedirect("angajati.jsp?status=error&message=The file format is not supported!");
         }
     }
 
@@ -44,7 +44,7 @@ public class ImportAngajatiServlet extends HttpServlet {
             try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                 while ((line = reader.readLine()) != null) {
                     String[] values = line.split(",");
-                    if (values.length >= 3) { // Presupunem că fișierul CSV are 3 coloane
+                    if (values.length >= 3) { // Assume the CSV file has 3 columns
                         pstmt.setString(1, values[0].trim()); // NUME
                         pstmt.setString(2, values[1].trim()); // FUNCTIE
                         pstmt.setString(3, values[2].trim()); // DATE_DE_CONTACT
@@ -56,7 +56,7 @@ public class ImportAngajatiServlet extends HttpServlet {
             response.sendRedirect("angajati.jsp?status=success&message=Importul din CSV a fost realizat cu succes!");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("angajati.jsp?status=error&message=Eroare la importul din CSV: " + e.getMessage());
+            response.sendRedirect("angajati.jsp?status=error&message=CSV import error: " + e.getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ public class ImportAngajatiServlet extends HttpServlet {
             String insertQuery = "INSERT INTO Angajati (NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (?, ?, ?)";
             try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                 for (Row row : sheet) {
-                    if (row.getRowNum() == 0) continue; // Ignorăm rândul de antet
+                    if (row.getRowNum() == 0) continue; // Ignore the header row
 
                     Cell numeCell = row.getCell(0);
                     Cell functieCell = row.getCell(1);
@@ -84,7 +84,7 @@ public class ImportAngajatiServlet extends HttpServlet {
             response.sendRedirect("angajati.jsp?status=success&message=Importul din Excel a fost realizat cu succes!");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("angajati.jsp?status=error&message=Eroare la importul din Excel: " + e.getMessage());
+            response.sendRedirect("angajati.jsp?status=error&message=Excel import error: " + e.getMessage());
         }
     }
 }

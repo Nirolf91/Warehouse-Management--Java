@@ -32,14 +32,14 @@ public class FurnizoriServlet extends HttpServlet {
             return;
         }
 
-        // Preia parametrii de filtrare
+        // Read filter parameters
         String id = request.getParameter("id");
         String nume = request.getParameter("nume");
         String adresa = request.getParameter("adresa");
         String contact = request.getParameter("contact");
 
         try {
-            // Obține datele filtrate
+            // Get filtered data
             FurnizoriFilter filter = new FurnizoriFilter();
             ResultSet rs = filter.filterFurnizori(id, nume, adresa, contact);
             request.setAttribute("resultSet", rs);
@@ -47,7 +47,7 @@ public class FurnizoriServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("furnizori.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("furnizori.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -67,8 +67,8 @@ public class FurnizoriServlet extends HttpServlet {
                     pstmt.setInt(1, Integer.parseInt(deleteId));
                     int rowsDeleted = pstmt.executeUpdate();
                     response.sendRedirect(rowsDeleted > 0
-                            ? "furnizori.jsp?status=success&message=Furnizor șters cu succes!"
-                            : "furnizori.jsp?status=error&message=Nu s-a găsit furnizorul pentru ștergere.");
+                            ? "furnizori.jsp?status=success&message=Supplier deleted successfully!"
+                            : "furnizori.jsp?status=error&message=No supplier was found for deletion.");
                 }
             } else if (nume != null && adresa != null && contact != null) {
                 if (idParam != null && !idParam.isEmpty()) {
@@ -79,7 +79,7 @@ public class FurnizoriServlet extends HttpServlet {
                         pstmt.setString(3, contact);
                         pstmt.setInt(4, Integer.parseInt(idParam));
                         pstmt.executeUpdate();
-                        response.sendRedirect("furnizori.jsp?status=success&message=Furnizor actualizat cu succes!");
+                        response.sendRedirect("furnizori.jsp?status=success&message=Supplier updated successfully!");
                     }
                 } else {
                     String insertQuery = "INSERT INTO Furnizori (NUME, ADRESA, CONTACT) VALUES (?, ?, ?)";
@@ -88,15 +88,15 @@ public class FurnizoriServlet extends HttpServlet {
                         pstmt.setString(2, adresa);
                         pstmt.setString(3, contact);
                         pstmt.executeUpdate();
-                        response.sendRedirect("furnizori.jsp?status=success&message=Furnizor adăugat cu succes!");
+                        response.sendRedirect("furnizori.jsp?status=success&message=Supplier added successfully!");
                     }
                 }
             } else {
-                response.sendRedirect("furnizori.jsp?status=error&message=Datele nu sunt complete!");
+                response.sendRedirect("furnizori.jsp?status=error&message=The submitted data is incomplete!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("furnizori.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("furnizori.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -111,7 +111,7 @@ public class FurnizoriServlet extends HttpServlet {
                 exportToPDF(rs, response);
             }
         } catch (Exception e) {
-            response.sendRedirect("furnizori.jsp?status=error&message=Eroare la export: " + e.getMessage());
+            response.sendRedirect("furnizori.jsp?status=error&message=Export error: " + e.getMessage());
         }
     }
 
@@ -138,12 +138,12 @@ public class FurnizoriServlet extends HttpServlet {
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        document.add(new Paragraph("Lista Furnizori\n\n"));
+        document.add(new Paragraph("Supplier List\n\n"));
 
         PdfPTable table = new PdfPTable(4);
         table.addCell("ID");
-        table.addCell("Nume");
-        table.addCell("Adresă");
+        table.addCell("Name");
+        table.addCell("Address");
         table.addCell("Contact");
 
         while (rs.next()) {

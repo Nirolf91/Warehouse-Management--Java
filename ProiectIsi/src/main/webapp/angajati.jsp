@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gestionare Angajați</title>
+    <title>Employee Management</title>
    <style>
        /* Stil general pentru butoane */
        input[type="submit"], button, select {
@@ -73,7 +73,7 @@
 
        tr.selected {
            background-color: #d1ecf1;
-           color: #333; /* Asigură lizibilitate */
+           color: #333; /* Ensures readability */
 
        }
    </style>
@@ -116,7 +116,7 @@
         }
 
         function confirmDelete() {
-            if (confirm("Sigur doriți să ștergeți acest angajat?")) {
+            if (confirm("Are you sure you want to delete this employee?")) {
                 document.getElementById("deleteForm").submit();
             }
         }
@@ -124,30 +124,30 @@
 </head>
 <body>
     <div class="container">
-        <h2>Gestionare Angajați</h2>
+        <h2>Employee Management</h2>
 
-        <!-- Formular pentru Adăugare/Actualizare -->
+        <!-- Add/Update form -->
         <form action="angajati" method="post">
             <label for="id">ID:</label>
-            <input type="number" name="id" id="id" placeholder="ID (opțional)"><br>
-            <label for="nume">Nume:</label>
+            <input type="number" name="id" id="id" placeholder="ID (optional)"><br>
+            <label for="nume">Name:</label>
             <input type="text" name="nume" id="nume" required><br>
-            <label for="functie">Funcție:</label>
+            <label for="functie">Job Title:</label>
             <input type="text" name="functie" id="functie" required><br>
             <label for="contact">Date de Contact:</label>
             <input type="text" name="contact" id="contact" required><br>
-            <input type="submit" value="Adaugă / Actualizează">
+            <input type="submit" value="Add / Update">
         </form>
 
-        <!-- Formular pentru Ștergere -->
+        <!-- Delete form -->
         <form action="angajati" method="post" id="deleteForm">
             <input type="hidden" name="delete" id="deleteId">
-            <button type="button" onclick="confirmDelete()">Șterge</button>
+            <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
-        <!-- Formular pentru Export -->
+        <!-- Export form -->
         <form action="angajati" method="post">
-            <label for="exportFormat">Exportă datele în format:</label>
+            <label for="exportFormat">Export data as:</label>
             <select name="export" id="exportFormat">
                 <option value="csv">CSV</option>
                 <option value="pdf">PDF</option>
@@ -157,32 +157,32 @@
 
   <!-- Import -->
     <form action="importAngajati" method="post" enctype="multipart/form-data" style="display: inline;">
-        <label for="file">Importă datele:</label>
+        <label for="file">Import data:</label>
         <input type="file" name="file" id="file" accept=".csv, .xlsx, .xls" required>
-        <button type="submit">Importă</button>
+        <button type="submit">Import</button>
     </form>
 
-        <!-- Formular pentru Filtrare -->
+        <!-- Filter form -->
         <form action="angajati.jsp" method="get">
             <label for="idFilter">ID:</label>
             <input type="text" name="id" id="idFilter">
-            <label for="numeFilter">Nume:</label>
+            <label for="numeFilter">Name:</label>
             <input type="text" name="nume" id="numeFilter">
-            <label for="functieFilter">Funcție:</label>
+            <label for="functieFilter">Job Title:</label>
             <input type="text" name="functie" id="functieFilter">
             <label for="contactFilter">Date de Contact:</label>
             <input type="text" name="contact" id="contactFilter">
-            <button type="submit">Filtrează</button>
+            <button type="submit">Filter</button>
         </form>
 
-        <!-- Tabel pentru afișarea angajaților -->
-        <h2>Lista Angajați</h2>
+        <!-- Employee table -->
+        <h2>Employee List</h2>
         <table>
             <thead>
                 <tr>
                     <th onclick="sortTable(0)">ID</th>
-                    <th onclick="sortTable(1)">Nume</th>
-                    <th onclick="sortTable(2)">Funcție</th>
+                    <th onclick="sortTable(1)">Name</th>
+                    <th onclick="sortTable(2)">Job Title</th>
                     <th onclick="sortTable(3)">Date de Contact</th>
                 </tr>
             </thead>
@@ -222,7 +222,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Eroare: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error: <%= e.getMessage() %></td>
                 </tr>
                 <%
                     }
@@ -230,34 +230,34 @@
             </tbody>
         </table>
 
-  <!-- Include Chart.js și plugin-ul Data Labels -->
+  <!-- Includes Chart.js and the Data Labels plugin -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-  <!-- Grafic pentru distribuția funcțiilor angajaților -->
-  <h2>Distribuția Funcțiilor Angajaților</h2>
+  <!-- Employee role distribution chart -->
+  <h2>Employee Role Distribution</h2>
   <div style="width: 60%; margin: auto;">
       <canvas id="graficAngajati"></canvas>
   </div>
 
   <script>
-      // Funcție pentru a încărca datele și a desena graficul
+      // Loads data and draws the chart
       function incarcaGraficAngajati() {
-          fetch('graficAngajati') // Apelează servlet-ul pentru datele graficului
+          fetch('graficAngajati') // Calls the chart data servlet
               .then(response => response.json())
               .then(data => {
-                  // Transformă datele în format pentru Chart.js
+                  // Transforms data for Chart.js
                   const functii = data.map(item => item.functie);
                   const numere = data.map(item => item.numar);
 
-                  // Creează graficul
+                  // Creates the chart
                   const ctx = document.getElementById('graficAngajati').getContext('2d');
                   new Chart(ctx, {
                       type: 'pie',
                       data: {
                           labels: functii,
                           datasets: [{
-                              label: 'Distribuția Funcțiilor',
+                              label: 'Role Distribution',
                               data: numere,
                               backgroundColor: [
                                   'rgba(255, 99, 132, 0.6)',
@@ -277,7 +277,7 @@
                               },
                               title: {
                                   display: true,
-                                  text: 'Distribuția Funcțiilor Angajaților'
+                                  text: 'Employee Role Distribution'
                               },
                               datalabels: {
                                   formatter: (value, ctx) => {
@@ -296,10 +296,10 @@
                       plugins: [ChartDataLabels]
                   });
               })
-              .catch(error => console.error('Eroare la încărcarea datelor pentru grafic:', error));
+              .catch(error => console.error('Error loading chart data:', error));
       }
 
-      // Încarcă graficul când pagina este complet încărcată
+      // Loads the chart when the page is fully loaded
       window.onload = incarcaGraficAngajati;
   </script>
 

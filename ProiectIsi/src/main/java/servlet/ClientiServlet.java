@@ -32,24 +32,24 @@ public class ClientiServlet extends HttpServlet {
             return;
         }
 
-        // Preluăm parametrii pentru filtrare
+        // Read filter parameters
         String idClient = request.getParameter("id");
         String nume = request.getParameter("nume");
         String adresa = request.getParameter("adresa");
         String contact = request.getParameter("contact");
 
         try {
-            // Instanțiem clasa ClientiFilter pentru filtrare
+            // Create ClientiFilter for filtering
             ClientiFilter filter = new ClientiFilter();
             ResultSet rs = filter.filterClienti(idClient, nume, adresa, contact);
 
-            // Pasăm rezultatul filtrării către JSP
+            // Forward filtered results to JSP
             request.setAttribute("resultSet", rs);
             request.getRequestDispatcher("clienti.jsp").forward(request, response);
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("clienti.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("clienti.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -64,15 +64,15 @@ public class ClientiServlet extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (deleteId != null && !deleteId.isEmpty()) {
-                // Ștergerea unui client
+                // Deleterea unui client
                 String deleteQuery = "DELETE FROM Clienti WHERE ID_CLIENT = ?";
                 try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
                     pstmt.setInt(1, Integer.parseInt(deleteId));
                     int rowsDeleted = pstmt.executeUpdate();
                     if (rowsDeleted > 0) {
-                        response.sendRedirect("clienti.jsp?status=success&message=Client șters cu succes!");
+                        response.sendRedirect("clienti.jsp?status=success&message=Client deleted successfully!");
                     } else {
-                        response.sendRedirect("clienti.jsp?status=error&message=Nu s-a găsit clientul pentru ștergere.");
+                        response.sendRedirect("clienti.jsp?status=error&message=No client was found for deletion.");
                     }
                 }
             } else if (nume != null && adresa != null && contact != null) {
@@ -85,25 +85,25 @@ public class ClientiServlet extends HttpServlet {
                         pstmt.setString(3, contact);
                         pstmt.setInt(4, Integer.parseInt(idParam));
                         pstmt.executeUpdate();
-                        response.sendRedirect("clienti.jsp?status=success&message=Client actualizat cu succes!");
+                        response.sendRedirect("clienti.jsp?status=success&message=Client updated successfully!");
                     }
                 } else {
-                    // Adăugare client nou
+                    // Add a new client
                     String insertQuery = "INSERT INTO Clienti (NUME, ADRESA, CONTACT) VALUES (?, ?, ?)";
                     try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                         pstmt.setString(1, nume);
                         pstmt.setString(2, adresa);
                         pstmt.setString(3, contact);
                         pstmt.executeUpdate();
-                        response.sendRedirect("clienti.jsp?status=success&message=Client adăugat cu succes!");
+                        response.sendRedirect("clienti.jsp?status=success&message=Client added successfully!");
                     }
                 }
             } else {
-                response.sendRedirect("clienti.jsp?status=error&message=Datele nu sunt complete!");
+                response.sendRedirect("clienti.jsp?status=error&message=The submitted data is incomplete!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("clienti.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("clienti.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -117,10 +117,10 @@ public class ClientiServlet extends HttpServlet {
             } else if ("pdf".equalsIgnoreCase(format)) {
                 exportToPDF(rs, response);
             } else {
-                response.sendRedirect("clienti.jsp?status=error&message=Format invalid pentru export!");
+                response.sendRedirect("clienti.jsp?status=error&message=Invalid export format!");
             }
         } catch (Exception e) {
-            response.sendRedirect("clienti.jsp?status=error&message=Eroare la export: " + e.getMessage());
+            response.sendRedirect("clienti.jsp?status=error&message=Export error: " + e.getMessage());
         }
     }
 
@@ -147,12 +147,12 @@ public class ClientiServlet extends HttpServlet {
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        document.add(new Paragraph("Lista Clienți\n\n"));
+        document.add(new Paragraph("Client List\n\n"));
 
         PdfPTable table = new PdfPTable(4);
         table.addCell("ID");
-        table.addCell("Nume");
-        table.addCell("Adresă");
+        table.addCell("Name");
+        table.addCell("Address");
         table.addCell("Contact");
 
         while (rs.next()) {

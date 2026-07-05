@@ -62,11 +62,11 @@
     <div class="login-container">
         <h2>Autentificare</h2>
         <form method="post" action="login">
-            <label for="username">Nume utilizator:</label>
+            <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
-            <label for="password">Parola:</label>
+            <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <span class="toggle-password" onclick="togglePassword()">Afiseaza parola</span>
+            <span class="toggle-password" onclick="togglePassword()">Show password</span>
             <button type="submit">Autentificare</button>
         </form>
     </div>
@@ -76,10 +76,10 @@
             const toggleText = document.querySelector('.toggle-password');
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
-                toggleText.textContent = 'Ascunde parola';
+                toggleText.textContent = 'Hide password';
             } else {
                 passwordField.type = 'password';
-                toggleText.textContent = 'Afiseaza parola';
+                toggleText.textContent = 'Show password';
             }
         }
     </script>

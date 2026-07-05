@@ -29,16 +29,16 @@
             return;
         }
     %>
-    <h2>Loguri Utilizare Aplicație</h2>
+    <h2>Application Usage Logs</h2>
     <table>
         <thead>
             <tr>
                 <th>ID Log</th>
                 <th>Utilizator</th>
                 <th>Rol</th>
-                <th>Data și Ora</th>
-                <th>Acțiune Logică</th>
-                <th>Comandă SQL</th>
+                <th>Date and Time</th>
+                <th>Logical Action</th>
+                <th>SQL Command</th>
             </tr>
         </thead>
         <tbody>
@@ -60,7 +60,7 @@
             <%
                     }
                 } catch (Exception e) {
-                    out.println("<tr><td colspan='6'>Eroare: " + e.getMessage() + "</td></tr>");
+                    out.println("<tr><td colspan='6'>Error: " + e.getMessage() + "</td></tr>");
                 }
             %>
         </tbody>

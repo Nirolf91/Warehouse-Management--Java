@@ -32,7 +32,7 @@ public class EvaluariServlet extends HttpServlet {
             return;
         }
 
-        // Filtrare Evaluări folosind EvaluariFilter
+        // Filter reviews using EvaluariFilter
         String idEvaluare = request.getParameter("idEvaluare");
         String idClient = request.getParameter("idClient");
         String scor = request.getParameter("scor");
@@ -47,7 +47,7 @@ public class EvaluariServlet extends HttpServlet {
             request.getRequestDispatcher("evaluari.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("evaluari.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("evaluari.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -63,14 +63,14 @@ public class EvaluariServlet extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (deleteId != null && !deleteId.isEmpty()) {
-                // Ștergerea unei evaluări
+                // Delete a review
                 String deleteQuery = "DELETE FROM Evaluari WHERE ID_EVALUARE = ?";
                 try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
                     pstmt.setInt(1, Integer.parseInt(deleteId));
                     int rowsDeleted = pstmt.executeUpdate();
                     response.sendRedirect(rowsDeleted > 0
-                            ? "evaluari.jsp?status=success&message=Evaluare ștearsă cu succes!"
-                            : "evaluari.jsp?status=error&message=Nu s-a găsit evaluarea pentru ștergere.");
+                            ? "evaluari.jsp?status=success&message=Review deleted successfully!"
+                            : "evaluari.jsp?status=error&message=No review was found for deletion.");
                 }
             } else if (idClient != null && scor != null && feedback != null && dataEvaluarii != null) {
                 if (idParam != null && !idParam.isEmpty()) {
@@ -83,10 +83,10 @@ public class EvaluariServlet extends HttpServlet {
                         pstmt.setDate(4, java.sql.Date.valueOf(dataEvaluarii));
                         pstmt.setInt(5, Integer.parseInt(idParam));
                         pstmt.executeUpdate();
-                        response.sendRedirect("evaluari.jsp?status=success&message=Evaluare actualizată cu succes!");
+                        response.sendRedirect("evaluari.jsp?status=success&message=Review updated successfully!");
                     }
                 } else {
-                    // Adăugare evaluare nouă
+                    // Add a new review
                     String insertQuery = "INSERT INTO Evaluari (ID_EVALUARE, ID_CLIENT, SCOR, FEEDBACK, DATA_EVALUARII) " +
                             "VALUES (evaluare_seq.NEXTVAL, ?, ?, ?, ?)";
                     try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
@@ -95,16 +95,16 @@ public class EvaluariServlet extends HttpServlet {
                         pstmt.setString(3, feedback);
                         pstmt.setDate(4, java.sql.Date.valueOf(dataEvaluarii));
                         pstmt.executeUpdate();
-                        response.sendRedirect("evaluari.jsp?status=success&message=Evaluare adăugată cu succes!");
+                        response.sendRedirect("evaluari.jsp?status=success&message=Review added successfully!");
                     }
 
                 }
             } else {
-                response.sendRedirect("evaluari.jsp?status=error&message=Datele nu sunt complete!");
+                response.sendRedirect("evaluari.jsp?status=error&message=The submitted data is incomplete!");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("evaluari.jsp?status=error&message=Eroare SQL: " + e.getMessage());
+            response.sendRedirect("evaluari.jsp?status=error&message=SQL error: " + e.getMessage());
         }
     }
 
@@ -119,7 +119,7 @@ public class EvaluariServlet extends HttpServlet {
                 exportToPDF(rs, response);
             }
         } catch (Exception e) {
-            response.sendRedirect("evaluari.jsp?status=error&message=Eroare la export: " + e.getMessage());
+            response.sendRedirect("evaluari.jsp?status=error&message=Export error: " + e.getMessage());
         }
     }
 
@@ -147,14 +147,14 @@ public class EvaluariServlet extends HttpServlet {
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
         document.open();
-        document.add(new Paragraph("Lista Evaluări\n\n"));
+        document.add(new Paragraph("Review List\n\n"));
 
         PdfPTable table = new PdfPTable(5);
         table.addCell("ID Evaluare");
         table.addCell("ID Client");
         table.addCell("Scor");
         table.addCell("Feedback");
-        table.addCell("Data Evaluării");
+        table.addCell("Review Date");
 
         while (rs.next()) {
             table.addCell(String.valueOf(rs.getInt("ID_EVALUARE")));
