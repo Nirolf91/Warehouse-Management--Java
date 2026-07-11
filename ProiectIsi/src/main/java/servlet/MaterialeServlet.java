@@ -166,7 +166,7 @@ public class MaterialeServlet extends HttpServlet {
 
     private void exportToCSV(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=materiale.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=materials.csv");
 
         PrintWriter writer = response.getWriter();
         writer.println("ID_MATERIAL,NUME,DESCRIERE,CANTITATE_IN_STOC,PRET_UNITAR,ID_FURNIZOR");
@@ -184,7 +184,7 @@ public class MaterialeServlet extends HttpServlet {
 
     private void exportToPDF(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=materiale.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=materials.pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
@@ -192,12 +192,12 @@ public class MaterialeServlet extends HttpServlet {
         document.add(new Paragraph("Material List\n\n"));
 
         PdfPTable table = new PdfPTable(6);
-        table.addCell("ID Material");
+        table.addCell("Material ID");
         table.addCell("Name");
-        table.addCell("Descriere");
+        table.addCell("Description");
         table.addCell("Stock Quantity");
         table.addCell("Unit Price");
-        table.addCell("ID Furnizor");
+        table.addCell("Supplier ID");
 
         while (rs.next()) {
             table.addCell(String.valueOf(rs.getInt("ID_MATERIAL")));

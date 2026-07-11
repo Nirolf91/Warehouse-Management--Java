@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -60,14 +60,14 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Autentificare</h2>
+        <h2>Login</h2>
         <form method="post" action="login">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
             <span class="toggle-password" onclick="togglePassword()">Show password</span>
-            <button type="submit">Autentificare</button>
+            <button type="submit">Login</button>
         </form>
     </div>
     <script>

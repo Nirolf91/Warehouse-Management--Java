@@ -1,6 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="database.DatabaseConnection" %>
+<%!
+    private String h(String value) {
+        if (value == null) return "";
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +18,8 @@
     <style>
        input[type="submit"], button, select {
            margin-top: 10px;
+           margin-right: 6px;
+           margin-bottom: 4px;
            padding: 10px 20px;
            font-size: 14px;
            font-weight: bold;
@@ -18,6 +30,10 @@
            cursor: pointer;
            transition: background-color 0.3s ease, transform 0.2s ease;
            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+       }
+
+       form {
+           margin: 8px 0;
        }
 
        input[type="submit"]:hover, button:hover {
@@ -123,6 +139,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="home.jsp"><button type="button">Home</button></a>
         <h2>Material Management</h2>
 
         <!-- Add/Update form -->
@@ -131,13 +148,13 @@
             <input type="number" name="id" id="id" placeholder="ID (optional)"><br>
             <label for="nume">Name:</label>
             <input type="text" name="nume" id="nume" required><br>
-            <label for="descriere">Descriere:</label>
+            <label for="descriere">Description:</label>
             <input type="text" name="descriere" id="descriere" required><br>
             <label for="cantitate">Stock Quantity:</label>
             <input type="number" name="cantitate" id="cantitate" required><br>
             <label for="pret">Unit Price:</label>
             <input type="number" step="0.01" name="pret" id="pret" required><br>
-            <label for="idFurnizor">ID Furnizor:</label>
+            <label for="idFurnizor">Supplier ID:</label>
             <input type="number" name="idFurnizor" id="idFurnizor" required><br>
             <input type="submit" value="Add / Update">
         </form>
@@ -164,13 +181,13 @@
             <input type="text" name="id" id="idFilter">
             <label for="numeFilter">Name:</label>
             <input type="text" name="nume" id="numeFilter">
-            <label for="descriereFilter">Descriere:</label>
+            <label for="descriereFilter">Description:</label>
             <input type="text" name="descriere" id="descriereFilter">
             <label for="cantitateFilter">Quantity:</label>
             <input type="text" name="cantitate" id="cantitateFilter">
             <label for="pretFilter">Price:</label>
             <input type="text" name="pret" id="pretFilter">
-            <label for="idFurnizorFilter">ID Furnizor:</label>
+            <label for="idFurnizorFilter">Supplier ID:</label>
             <input type="text" name="idFurnizor" id="idFurnizorFilter">
             <button type="submit">Filter</button>
         </form>
@@ -182,10 +199,10 @@
                 <tr>
                     <th onclick="sortTable(0)">ID</th>
                     <th onclick="sortTable(1)">Name</th>
-                    <th onclick="sortTable(2)">Descriere</th>
+                    <th onclick="sortTable(2)">Description</th>
                     <th onclick="sortTable(3)">Stock Quantity</th>
                     <th onclick="sortTable(4)">Unit Price</th>
-                    <th onclick="sortTable(5)">ID Furnizor</th>
+                    <th onclick="sortTable(5)">Supplier ID</th>
                 </tr>
             </thead>
             <tbody>
@@ -220,8 +237,8 @@
                 %>
                 <tr onclick="selectRow(this)">
                     <td><%= rs.getInt("ID_MATERIAL") %></td>
-                    <td><%= rs.getString("NUME") %></td>
-                    <td><%= rs.getString("DESCRIERE") %></td>
+                    <td><%= h(rs.getString("NUME")) %></td>
+                    <td><%= h(rs.getString("DESCRIERE")) %></td>
                     <td><%= rs.getInt("CANTITATE_IN_STOC") %></td>
                     <td><%= rs.getDouble("PRET_UNITAR") %></td>
                     <td><%= rs.getInt("ID_FURNIZOR") %></td>
@@ -232,7 +249,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="6" class="error">Error: <%= e.getMessage() %></td>
+                    <td colspan="6" class="error">Error: <%= h(e.getMessage()) %></td>
                 </tr>
                 <%
                     }

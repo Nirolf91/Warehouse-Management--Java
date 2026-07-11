@@ -64,7 +64,7 @@ public class ClientiServlet extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (deleteId != null && !deleteId.isEmpty()) {
-                // Deleterea unui client
+                // Delete a client
                 String deleteQuery = "DELETE FROM Clienti WHERE ID_CLIENT = ?";
                 try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
                     pstmt.setInt(1, Integer.parseInt(deleteId));
@@ -126,7 +126,7 @@ public class ClientiServlet extends HttpServlet {
 
     private void exportToCSV(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=clienti.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=clients.csv");
 
         PrintWriter writer = response.getWriter();
         writer.println("ID_CLIENT,NUME,ADRESA,CONTACT");
@@ -142,7 +142,7 @@ public class ClientiServlet extends HttpServlet {
 
     private void exportToPDF(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=clienti.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=clients.pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());

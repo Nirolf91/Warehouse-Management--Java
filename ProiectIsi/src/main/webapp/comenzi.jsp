@@ -1,6 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="database.DatabaseConnection" %>
+<%!
+    private String h(String value) {
+        if (value == null) return "";
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,6 +30,7 @@
         /* Styled buttons */
         input[type="submit"], button, select {
             margin: 5px 0;
+            margin-right: 6px;
             padding: 8px 16px;
             font-size: 14px;
             font-weight: bold;
@@ -30,6 +41,10 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin: 8px 0;
         }
         input[type="submit"]:hover, button:hover {
             background-color: #45a049;
@@ -139,7 +154,18 @@
 </head>
 <body>
     <div class="container">
+        <a href="home.jsp"><button type="button">Home</button></a>
         <h2>Order Management</h2>
+
+        <%
+            String status = request.getParameter("status");
+            String message = request.getParameter("message");
+            if ("success".equals(status)) {
+        %>
+            <div class="message"><%= h(message) %></div>
+        <% } else if ("error".equals(status)) { %>
+            <div class="error"><%= h(message) %></div>
+        <% } %>
 
         <!-- Form for Add/Update -->
         <form action="comenzi" method="post">
@@ -150,11 +176,11 @@
             <input type="date" name="data_comenzii" id="data_comenzii" required><br>
             <label for="id_client">ID Client:</label>
             <input type="number" name="id_client" id="id_client" required><br>
-            <label for="id_furnizor">ID Furnizor:</label>
+            <label for="id_furnizor">Supplier ID:</label>
             <input type="number" name="id_furnizor" id="id_furnizor" required><br>
-            <label for="id_angajat">ID Angajat:</label>
+            <label for="id_angajat">Employee ID:</label>
             <input type="number" name="id_angajat" id="id_angajat" required><br>
-            <label for="id_material">ID Material:</label>
+            <label for="id_material">Material ID:</label>
             <input type="number" name="id_material" id="id_material" required><br>
             <label for="total_comanda">Order Total:</label>
             <input type="text" name="total_comanda" id="total_comanda" required><br>
@@ -166,7 +192,7 @@
             <input type="number" name="cantitate" id="cantitate" required><br>
             <label for="pret_total">Total Price:</label>
             <input type="text" name="pret_total" id="pret_total" required><br>
-            <label for="id_transportator">ID Transportator:</label>
+            <label for="id_transportator">Carrier ID:</label>
             <input type="number" name="id_transportator" id="id_transportator" required><br>
             <input type="submit" value="Add / Update">
         </form>
@@ -174,7 +200,7 @@
         <!-- Form for Delete -->
         <form action="comenzi" method="post" id="deleteForm">
             <input type="hidden" name="action" value="delete">
-            <input type="hidden" name="id" id="deleteId">
+            <input type="hidden" name="delete" id="deleteId">
             <button type="button" onclick="confirmDelete()">Delete</button>
         </form>
 
@@ -183,13 +209,13 @@
             <label>Order ID:</label><input type="text" name="id">
             <label>Order Date:</label><input type="date" name="data_comenzii">
             <label>ID Client:</label><input type="text" name="id_client">
-            <label>Statut:</label><input type="text" name="statut_comanda">
+            <label>Status:</label><input type="text" name="statut_comanda">
             <button type="submit">Filter</button>
         </form>
 
         <!-- Export Options -->
         <form action="comenzi" method="get">
-            <label for="exportFormat">Export date:</label>
+            <label for="exportFormat">Export data as:</label>
             <select name="export" id="exportFormat">
                 <option value="csv">CSV</option>
                 <option value="pdf">PDF</option>
@@ -205,15 +231,15 @@
                     <th onclick="sortTable(0)">ID</th>
                     <th onclick="sortTable(1)">Order Date</th>
                     <th onclick="sortTable(2)">ID Client</th>
-                    <th onclick="sortTable(3)">ID Furnizor</th>
-                    <th onclick="sortTable(4)">ID Angajat</th>
-                    <th onclick="sortTable(5)">ID Material</th>
+                    <th onclick="sortTable(3)">Supplier ID</th>
+                    <th onclick="sortTable(4)">Employee ID</th>
+                    <th onclick="sortTable(5)">Material ID</th>
                     <th onclick="sortTable(6)">Total</th>
-                    <th onclick="sortTable(7)">Statut</th>
-                    <th onclick="sortTable(8)">Tip</th>
+                    <th onclick="sortTable(7)">Status</th>
+                    <th onclick="sortTable(8)">Type</th>
                     <th onclick="sortTable(9)">Quantity</th>
                     <th onclick="sortTable(10)">Total Price</th>
-                    <th onclick="sortTable(11)">ID Transportator</th>
+                    <th onclick="sortTable(11)">Carrier ID</th>
                 </tr>
             </thead>
             <tbody>
@@ -243,8 +269,8 @@
                     <td><%= rs.getInt("ID_ANGAJAT") %></td>
                     <td><%= rs.getInt("ID_MATERIAL") %></td>
                     <td><%= rs.getDouble("TOTAL_COMANDA") %></td>
-                    <td><%= rs.getString("STATUT_COMANDA") %></td>
-                    <td><%= rs.getString("TIP_COMANDA") %></td>
+                    <td><%= h(rs.getString("STATUT_COMANDA")) %></td>
+                    <td><%= h(rs.getString("TIP_COMANDA")) %></td>
                     <td><%= rs.getInt("CANTITATE") %></td>
                     <td><%= rs.getDouble("PRET_TOTAL") %></td>
                     <td><%= rs.getInt("ID_TRANSPORTATOR") %></td>
@@ -254,7 +280,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="12" class="error">SQL error: <%= e.getMessage() %></td>
+                    <td colspan="12" class="error">SQL error: <%= h(e.getMessage()) %></td>
                 </tr>
                 <%
                     }

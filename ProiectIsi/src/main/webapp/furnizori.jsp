@@ -1,12 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="database.DatabaseConnection" %>
+<%!
+    private String h(String value) {
+        if (value == null) return "";
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Supplier Management</title>
 <style>
-    /* Text-field and input styling pentru dimensiuni similare */
+    /* Text-field and input styling */
     input[type="text"], input[type="number"], input[type="date"], select {
         width: calc(30% - 10px); /* Adjusts the size based on available space */
         margin: 5px 0;
@@ -17,9 +27,10 @@
         box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
     }
 
-    /* Butoanele */
+    /* Buttons */
     input[type="submit"], button, select {
         margin: 5px 0;
+        margin-right: 6px;
         padding: 10px 20px;
         font-size: 14px;
         font-weight: bold;
@@ -30,6 +41,10 @@
         cursor: pointer;
         transition: background-color 0.3s, transform 0.2s;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    form {
+        margin: 8px 0;
     }
 
     input[type="submit"]:hover, button:hover {
@@ -52,7 +67,7 @@
         margin-bottom: 10px;
     }
 
-    /* Tabel stilizat */
+    /* Table styling */
     table {
         width: 100%;
         border-collapse: collapse;
@@ -92,6 +107,20 @@
 
     tr.selected {
         background-color: #d1ecf1;
+    }
+
+    .message {
+        color: green;
+        text-align: center;
+        margin: 10px 0;
+        font-weight: bold;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+        margin: 10px 0;
+        font-weight: bold;
     }
 
 </style>
@@ -141,11 +170,23 @@
                 document.getElementById("deleteForm").submit();
             }
         }
+
     </script>
 </head>
 <body>
     <div class="container">
+        <a href="home.jsp"><button type="button">Home</button></a>
         <h2>Supplier Management</h2>
+
+        <%
+            String status = request.getParameter("status");
+            String message = request.getParameter("message");
+            if ("success".equals(status)) {
+        %>
+            <div class="message"><%= h(message) %></div>
+        <% } else if ("error".equals(status)) { %>
+            <div class="error"><%= h(message) %></div>
+        <% } %>
 
         <!-- Add/Update form -->
         <form action="furnizori" method="post">
@@ -220,6 +261,7 @@
                     if (numeFilter != null && !numeFilter.isEmpty()) query.append(" AND NUME LIKE ?");
                     if (adresaFilter != null && !adresaFilter.isEmpty()) query.append(" AND ADRESA LIKE ?");
                     if (contactFilter != null && !contactFilter.isEmpty()) query.append(" AND CONTACT LIKE ?");
+                    query.append(" ORDER BY ID_FURNIZOR");
 
                     try (Connection conn = DatabaseConnection.getConnection();
                          PreparedStatement stmt = conn.prepareStatement(query.toString())) {
@@ -235,9 +277,9 @@
                 %>
                 <tr onclick="selectRow(this)">
                     <td><%= rs.getInt("ID_FURNIZOR") %></td>
-                    <td><%= rs.getString("NUME") %></td>
-                    <td><%= rs.getString("ADRESA") %></td>
-                    <td><%= rs.getString("CONTACT") %></td>
+                    <td><%= h(rs.getString("NUME")) %></td>
+                    <td><%= h(rs.getString("ADRESA")) %></td>
+                    <td><%= h(rs.getString("CONTACT")) %></td>
                 </tr>
                 <%
                             }
@@ -245,7 +287,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Error: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error: <%= h(e.getMessage()) %></td>
                 </tr>
                 <%
                     }

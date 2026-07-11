@@ -148,7 +148,7 @@ public class AngajatiServlet extends HttpServlet {
 
     private void exportToCSV(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=angajati.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=employees.csv");
 
         PrintWriter writer = response.getWriter();
         writer.println("ID_ANGAJAT,NUME,FUNCTIE,DATE_DE_CONTACT");
@@ -164,7 +164,7 @@ public class AngajatiServlet extends HttpServlet {
 
     private void exportToPDF(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=angajati.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=employees.pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
@@ -175,7 +175,7 @@ public class AngajatiServlet extends HttpServlet {
         table.addCell("ID");
         table.addCell("Name");
         table.addCell("Job Title");
-        table.addCell("Date de Contact");
+        table.addCell("Contact Details");
 
         while (rs.next()) {
             table.addCell(String.valueOf(rs.getInt("ID_ANGAJAT")));

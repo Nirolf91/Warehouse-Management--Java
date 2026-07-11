@@ -13,15 +13,15 @@ public class ComenziFilter {
      * Filters orders using the provided parameters.
      *
      * @param idComanda       Order ID
-     * @param dataComenzii    Data comenzii
-     * @param idClient        ID-ul clientului
+     * @param dataComenzii    Order date
+     * @param idClient        Client ID
      * @param idFurnizor      Supplier ID
      * @param idAngajat       Employee ID
-     * @param idMaterial      ID-ul materialului
+     * @param idMaterial      Material ID
      * @param totalComanda    Order total
      * @param statutComanda   Order status
      * @param tipComanda      Order type
-     * @param cantitate       Quantitya comenzii
+     * @param cantitate       Order quantity
      * @param pretTotal       Total price
      * @param idTransportator Carrier ID
      * @return ResultSet with filtered results

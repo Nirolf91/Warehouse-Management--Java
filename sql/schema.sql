@@ -123,7 +123,7 @@ CREATE TABLE Logs (
 );
 
 CREATE SEQUENCE utilizatori_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE angajati_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE angajati_seq START WITH 26 INCREMENT BY 1;
 CREATE SEQUENCE clienti_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE furnizori_seq START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE transportatori_seq START WITH 1 INCREMENT BY 1;
@@ -182,6 +182,36 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE TRIGGER trg_materiale_id
+BEFORE INSERT ON Materiale
+FOR EACH ROW
+BEGIN
+    IF :NEW.ID_MATERIAL IS NULL THEN
+        :NEW.ID_MATERIAL := materiale_seq.NEXTVAL;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_comenzi_id
+BEFORE INSERT ON Comenzi
+FOR EACH ROW
+BEGIN
+    IF :NEW.ID_COMANDA IS NULL THEN
+        :NEW.ID_COMANDA := comanda_seq.NEXTVAL;
+    END IF;
+END;
+/
+
+CREATE OR REPLACE TRIGGER trg_evaluari_id
+BEFORE INSERT ON Evaluari
+FOR EACH ROW
+BEGIN
+    IF :NEW.ID_EVALUARE IS NULL THEN
+        :NEW.ID_EVALUARE := evaluare_seq.NEXTVAL;
+    END IF;
+END;
+/
+
 CREATE OR REPLACE TRIGGER trg_logs_id
 BEFORE INSERT ON Logs
 FOR EACH ROW
@@ -195,8 +225,31 @@ END;
 INSERT INTO Utilizatori (UTILIZATOR, PAROLA, ROL) VALUES ('admin', 'admin123', 'admin');
 INSERT INTO Utilizatori (UTILIZATOR, PAROLA, ROL) VALUES ('user', 'user123', 'user');
 
-INSERT INTO Angajati (NUME, FUNCTIE, DATE_DE_CONTACT) VALUES ('Popescu Andrei', 'Warehouse Manager', 'andrei.popescu@example.com');
-INSERT INTO Angajati (NUME, FUNCTIE, DATE_DE_CONTACT) VALUES ('Ionescu Maria', 'Stock Operator', 'maria.ionescu@example.com');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (1, 'Florin', 'Casier', 'str Trandafirilor');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (2, 'Marian Ionescu', 'Supraveghetor de stoc', 'Galati, Strada Lalelelor, nr. 23 | 0723678901');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (3, 'Ion Dumitrescu', 'Aprovizionare', 'Galati, Strada Margaretelelor, nr. 12 | 0724789012');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (4, 'Cristina Stanescu', 'Inspector calitate', 'Galati, Strada Florilor, nr. 7 | 0725890123');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (5, 'George Munteanu', 'Manipulant marfa', 'Galati, Strada Panselutelor, nr. 21 | 0726901234');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (6, 'Elena Nicolescu', 'Responsabil depozit', 'Galati, Strada Viorelelor, nr. 18 | 0727012345');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (7, 'Victor Radulescu', 'Manager de depozit', 'Galati, Strada Orhideelor, nr. 33 | 0728123456');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (8, 'Iulia Munteanu', 'Logistician', 'Galati, Strada Irisilor, nr. 42 | 0729234567');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (9, 'Mihai Georgescu', 'Supraveghetor de stoc', 'Galati, Strada Zambilelor, nr. 6 | 0730345678');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (10, 'Andrei Popescu', 'Aprovizionare', 'Galati, Strada Violetei, nr. 11 | 0731456789');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (11, 'Maria Stanescu', 'Inspector calitate', 'Galati, Strada Freziilor, nr. 25 | 0732567890');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (12, 'George Ionescu', 'Manipulant marfa', 'Galati, Strada Ghioceilor, nr. 19 | 0733678901');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (13, 'Elena Mihai', 'Responsabil mijloace fixe', 'Galati, Strada Bujorilor, nr. 13 | 0734789012');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (14, 'Victor Dumitrescu', 'Manager de depozit', 'Galati, Strada Papadiei, nr. 36 | 0735890123');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (15, 'Iulia Radulescu', 'Logistician', 'Galati, Strada Narciselor, nr. 29 | 0736901234');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (16, 'Andrei Nicolescu', 'Supraveghetor de stoc', 'Galati, Strada Caprifoiului, nr. 8 | 0738012345');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (17, 'Maria Dumitrescu', 'Aprovizionare', 'Galati, Strada Macilor, nr. 14 | 0739123456');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (18, 'George Popescu', 'Inspector calitate', 'Galati, Strada Crinilor, nr. 20 | 0740234567');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (19, 'Elena Stanescu', 'Manipulant marfa', 'Galati, Strada Hortensiilor, nr. 16 | 0741345678');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (20, 'Victor Ionescu', 'Responsabil depozit', 'Galati, Strada Trifoiului, nr. 27 | 0742456789');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (21, 'Iulia Munteanu', 'Manager de depozit', 'Galati, Strada Iedersilor, nr. 32 | 0743567890');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (22, 'Mihai Radulescu', 'Logistician', 'Galati, Strada Alunelor, nr. 10 | 0744678901');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (23, 'Ana Dumitrescu', 'Supraveghetor de stoc', 'Galati, Strada Castanelor, nr. 22 | 0745789012');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (24, 'Andrei Georgescu', 'Logistician', 'Galati, Strada Trandafirilor, nr. 15 | 0722567890');
+INSERT INTO Angajati (ID_ANGAJAT, NUME, FUNCTIE, DATE_DE_CONTACT) VALUES (25, 'Mihai Pavel', 'Manipulant marfa', 'Galati, Strada Furnalistilor, nr. 60 | 0786456125');
 
 INSERT INTO Clienti (NUME, ADRESA, CONTACT) VALUES ('Construct Plus SRL', 'Bucuresti, Str. Industriei 10', 'contact@constructplus.ro');
 INSERT INTO Clienti (NUME, ADRESA, CONTACT) VALUES ('Renovari Expert SRL', 'Cluj-Napoca, Str. Fabricii 7', 'office@renovari-expert.ro');

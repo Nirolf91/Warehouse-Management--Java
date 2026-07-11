@@ -1,6 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="database.DatabaseConnection" %>
+<%!
+    private String h(String value) {
+        if (value == null) return "";
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,6 +76,7 @@
             color: white;
             border: none;
             padding: 10px 15px;
+            margin: 4px 6px 4px 0;
             font-size: 14px;
             border-radius: 4px;
             cursor: pointer;
@@ -92,6 +103,10 @@
         form label {
             font-weight: bold;
             color: #333;
+        }
+
+        form {
+            margin: 8px 0;
         }
 
         .button-container {
@@ -158,6 +173,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="home.jsp"><button type="button">Home</button></a>
         <h2>Client Management</h2>
 
         <!-- Add/Update form -->
@@ -240,9 +256,9 @@
                 %>
                 <tr onclick="selectRow(this)">
                     <td><%= rs.getInt("ID_CLIENT") %></td>
-                    <td><%= rs.getString("NUME") %></td>
-                    <td><%= rs.getString("ADRESA") %></td>
-                    <td><%= rs.getString("CONTACT") %></td>
+                    <td><%= h(rs.getString("NUME")) %></td>
+                    <td><%= h(rs.getString("ADRESA")) %></td>
+                    <td><%= h(rs.getString("CONTACT")) %></td>
                 </tr>
                 <%
                             }
@@ -250,7 +266,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Error: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error: <%= h(e.getMessage()) %></td>
                 </tr>
                 <%
                     }

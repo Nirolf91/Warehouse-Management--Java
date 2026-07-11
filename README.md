@@ -38,7 +38,9 @@ The application is packaged as a Maven WAR project and runs on Tomcat with Jakar
 |       |   |-- service/         # helper services, including logging
 |       |   `-- servlet/         # CRUD/export/import/login servlets
 |       `-- webapp/              # JSP pages and static assets
-|-- sql/schema.sql               # Oracle schema and demo data
+|-- sql/
+|   |-- schema.sql               # Oracle schema and demo data
+|   `-- maintenance/             # optional repair/helper SQL scripts
 |-- imagini/                     # supporting images
 `-- README.md
 ```
@@ -56,6 +58,12 @@ The script also creates demo login accounts:
 admin / admin123
 user  / user123
 ```
+
+For a fresh project import, `sql/schema.sql` is the only required SQL file. The scripts under `sql/maintenance/` are optional helpers for local database repair:
+
+- `sync_sequences.sql` resets generated IDs to continue from the current maximum ID in each table.
+- `cleanup_angajati.sql` removes invalid employee test/import rows and restores the clean demo employee set.
+- `fix_furnizori_trigger.sql` repairs an old invalid supplier trigger if Oracle reports `ORA-04098`.
 
 ## Oracle Connection Configuration
 
@@ -132,6 +140,12 @@ Deploy this file to Tomcat.
 
 ```text
 http://localhost:8080/warehouse-management-isi/
+```
+
+When using Smart Tomcat directly from IntelliJ, the context path may be configured manually, for example:
+
+```text
+http://localhost:8080/ProiectIsi/
 ```
 
 ## Module Overview

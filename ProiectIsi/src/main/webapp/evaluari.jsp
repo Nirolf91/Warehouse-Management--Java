@@ -1,6 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="database.DatabaseConnection" %>
+<%!
+    private String h(String value) {
+        if (value == null) return "";
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,9 +27,10 @@
        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
    }
 
-   /* Stilizare pentru butoane */
+   /* Button styling */
    input[type="submit"], button, select {
        margin: 5px 0;
+       margin-right: 6px;
        padding: 10px 20px;
        font-size: 14px;
        font-weight: bold;
@@ -30,6 +41,10 @@
        cursor: pointer;
        transition: background-color 0.3s, transform 0.2s;
        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   }
+
+   form {
+       margin: 8px 0;
    }
 
    input[type="submit"]:hover, button:hover {
@@ -45,7 +60,7 @@
        background-color: #c9302c;
    }
 
-   /* Stilizare pentru tabel */
+   /* Table styling */
    table {
        width: 100%;
        border-collapse: collapse;
@@ -61,13 +76,13 @@
        color: white;
        font-weight: bold;
        padding: 12px;
-       text-align: center; /* Centrare text pentru titlurile coloanelor */
+       text-align: center;
        vertical-align: middle; /* Ensures vertical centering */
    }
 
    td {
        padding: 10px;
-       text-align: center; /* Centrare text pentru celule */
+       text-align: center;
        color: #333;
    }
 
@@ -135,6 +150,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="home.jsp"><button type="button">Home</button></a>
         <h2>Review Management</h2>
 
         <!-- Add/Update form -->
@@ -183,15 +199,15 @@
             <button type="submit">Filter</button>
         </form>
 
-        <!-- Mesaje de eroare/succes -->
+        <!-- Status messages -->
         <%
             String status = request.getParameter("status");
             String message = request.getParameter("message");
             if ("success".equals(status)) {
         %>
-            <div class="message"><%= message %></div>
+            <div class="message"><%= h(message) %></div>
         <% } else if ("error".equals(status)) { %>
-            <div class="error"><%= message %></div>
+            <div class="error"><%= h(message) %></div>
         <% } %>
 
         <!-- Review table -->
@@ -199,9 +215,9 @@
         <table>
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">ID Evaluare</th>
+                    <th onclick="sortTable(0)">Review ID</th>
                     <th onclick="sortTable(1)">ID Client</th>
-                    <th onclick="sortTable(2)">Scor</th>
+                    <th onclick="sortTable(2)">Score</th>
                     <th onclick="sortTable(3)">Feedback</th>
                     <th onclick="sortTable(4)">Review Date</th>
                 </tr>
@@ -238,7 +254,7 @@
                     <td><%= rs.getInt("ID_EVALUARE") %></td>
                     <td><%= rs.getInt("ID_CLIENT") %></td>
                     <td><%= rs.getInt("SCOR") %></td>
-                    <td><%= rs.getString("FEEDBACK") %></td>
+                    <td><%= h(rs.getString("FEEDBACK")) %></td>
                     <td><%= rs.getDate("DATA_EVALUARII") %></td>
                 </tr>
                 <%
@@ -247,7 +263,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="5" class="error">Error: <%= e.getMessage() %></td>
+                    <td colspan="5" class="error">Error: <%= h(e.getMessage()) %></td>
                 </tr>
                 <%
                     }
@@ -262,7 +278,7 @@
     <canvas id="chartEvaluari" width="800" height="400"></canvas>
 </div>
 
-<!-- Include biblioteca Chart.js -->
+<!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -280,14 +296,14 @@
                 const idEvaluare = data.map(item => item.id_evaluare);
                 const scor = data.map(item => item.scor);
 
-                // Configurarea graficului folosind Chart.js
+                // Configures the chart using Chart.js
                 const ctx = document.getElementById('chartEvaluari').getContext('2d');
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: idEvaluare,
                         datasets: [{
-                            label: 'Scor Evaluare',
+                            label: 'Review Score',
                             data: scor,
                             backgroundColor: 'rgba(54, 162, 235, 0.6)',
                             borderColor: 'rgba(54, 162, 235, 1)',
@@ -306,13 +322,13 @@
                             x: {
                                 title: {
                                     display: true,
-                                    text: 'ID Evaluare'
+                                    text: 'Review ID'
                                 }
                             },
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Scor'
+                                    text: 'Score'
                                 },
                                 beginAtZero: true
                             }
@@ -327,17 +343,6 @@
     }
 
     // Calls the chart display function when the page loads
-    window.onload = afiseazaGraficEvaluari;
-</script>
-        });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while displaying the chart.');
-            });
-    }
-
-    // Call the function to render the chart
     window.onload = afiseazaGraficEvaluari;
 </script>
 

@@ -13,13 +13,24 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @WebServlet("/comenzi")
 public class ComenziServlet extends HttpServlet {
+    private String page(HttpServletRequest request, String status, String message) {
+        return request.getContextPath() + "/comenzi.jsp?status=" + encode(status)
+                + "&message=" + encode(message);
+    }
+
+    private String encode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,7 +59,9 @@ public class ComenziServlet extends HttpServlet {
             request.getRequestDispatcher("comenzi.jsp").forward(request, response);
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("comenzi.jsp?status=error&message=SQL error: " + e.getMessage());
+            response.sendRedirect(page(request, "error", "SQL error: " + e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            response.sendRedirect(page(request, "error", "Invalid order data: " + e.getMessage()));
         }
     }
 
@@ -71,44 +84,46 @@ public class ComenziServlet extends HttpServlet {
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             if (deleteId != null && !deleteId.isEmpty()) {
-                // Deleterea unei comenzi
-                deleteComanda(connection, deleteId, response);
+                // Delete an order
+                deleteComanda(request, connection, deleteId, response);
             } else if (dataComenzii != null && idClient != null && idFurnizor != null && idAngajat != null
                     && idMaterial != null && totalComanda != null && statutComanda != null && tipComanda != null
                     && cantitate != null && pretTotal != null && idTransportator != null) {
 
                 if (idParam != null && !idParam.isEmpty()) {
                     // Update order
-                    updateComanda(connection, idParam, dataComenzii, idClient, idFurnizor, idAngajat,
+                    updateComanda(request, connection, idParam, dataComenzii, idClient, idFurnizor, idAngajat,
                             idMaterial, totalComanda, statutComanda, tipComanda, cantitate, pretTotal, idTransportator, response);
                 } else {
                     // Add a new order
-                    addComanda(connection, dataComenzii, idClient, idFurnizor, idAngajat, idMaterial,
+                    addComanda(request, connection, dataComenzii, idClient, idFurnizor, idAngajat, idMaterial,
                             totalComanda, statutComanda, tipComanda, cantitate, pretTotal, idTransportator, response);
                 }
             } else {
-                response.sendRedirect("comenzi.jsp?status=error&message=The submitted data is incomplete!");
+                response.sendRedirect(page(request, "error", "The submitted data is incomplete!"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("comenzi.jsp?status=error&message=SQL error: " + e.getMessage());
+            response.sendRedirect(page(request, "error", "SQL error: " + e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            response.sendRedirect(page(request, "error", "Invalid order data: " + e.getMessage()));
         }
     }
 
-    private void deleteComanda(Connection connection, String deleteId, HttpServletResponse response) throws IOException, SQLException {
+    private void deleteComanda(HttpServletRequest request, Connection connection, String deleteId, HttpServletResponse response) throws IOException, SQLException {
         String deleteQuery = "DELETE FROM Comenzi WHERE ID_COMANDA = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
             pstmt.setInt(1, Integer.parseInt(deleteId));
             int rowsDeleted = pstmt.executeUpdate();
             if (rowsDeleted > 0) {
-                response.sendRedirect("comenzi.jsp?status=success&message=Order deleted successfully!");
+                response.sendRedirect(page(request, "success", "Order deleted successfully!"));
             } else {
-                response.sendRedirect("comenzi.jsp?status=error&message=No order was found for deletion.");
+                response.sendRedirect(page(request, "error", "No order was found for deletion."));
             }
         }
     }
 
-    private void updateComanda(Connection connection, String idParam, String dataComenzii, String idClient, String idFurnizor,
+    private void updateComanda(HttpServletRequest request, Connection connection, String idParam, String dataComenzii, String idClient, String idFurnizor,
                                String idAngajat, String idMaterial, String totalComanda, String statutComanda,
                                String tipComanda, String cantitate, String pretTotal, String idTransportator,
                                HttpServletResponse response) throws IOException, SQLException {
@@ -116,7 +131,7 @@ public class ComenziServlet extends HttpServlet {
                 "ID_ANGAJAT = ?, ID_MATERIAL = ?, TOTAL_COMANDA = ?, STATUT_COMANDA = ?, TIP_COMANDA = ?, " +
                 "CANTITATE = ?, PRET_TOTAL = ?, ID_TRANSPORTATOR = ? WHERE ID_COMANDA = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(updateQuery)) {
-            pstmt.setString(1, dataComenzii);
+            pstmt.setDate(1, Date.valueOf(dataComenzii));
             pstmt.setInt(2, Integer.parseInt(idClient));
             pstmt.setInt(3, Integer.parseInt(idFurnizor));
             pstmt.setInt(4, Integer.parseInt(idAngajat));
@@ -129,11 +144,11 @@ public class ComenziServlet extends HttpServlet {
             pstmt.setInt(11, Integer.parseInt(idTransportator));
             pstmt.setInt(12, Integer.parseInt(idParam));
             pstmt.executeUpdate();
-            response.sendRedirect("comenzi.jsp?status=success&message=Order updated successfully!");
+            response.sendRedirect(page(request, "success", "Order updated successfully!"));
         }
     }
 
-    private void addComanda(Connection connection, String dataComenzii, String idClient, String idFurnizor,
+    private void addComanda(HttpServletRequest request, Connection connection, String dataComenzii, String idClient, String idFurnizor,
                             String idAngajat, String idMaterial, String totalComanda, String statutComanda,
                             String tipComanda, String cantitate, String pretTotal, String idTransportator,
                             HttpServletResponse response) throws IOException, SQLException {
@@ -141,7 +156,7 @@ public class ComenziServlet extends HttpServlet {
                 "ID_MATERIAL, TOTAL_COMANDA, STATUT_COMANDA, TIP_COMANDA, CANTITATE, PRET_TOTAL, ID_TRANSPORTATOR) " +
                 "VALUES (comanda_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
-            pstmt.setString(1, dataComenzii);
+            pstmt.setDate(1, Date.valueOf(dataComenzii));
             pstmt.setInt(2, Integer.parseInt(idClient));
             pstmt.setInt(3, Integer.parseInt(idFurnizor));
             pstmt.setInt(4, Integer.parseInt(idAngajat));
@@ -153,7 +168,7 @@ public class ComenziServlet extends HttpServlet {
             pstmt.setDouble(10, Double.parseDouble(pretTotal));
             pstmt.setInt(11, Integer.parseInt(idTransportator));
             pstmt.executeUpdate();
-            response.sendRedirect("comenzi.jsp?status=success&message=Order added successfully!");
+            response.sendRedirect(page(request, "success", "Order added successfully!"));
         }
     }
 
@@ -174,7 +189,7 @@ public class ComenziServlet extends HttpServlet {
 
     private void exportToCSV(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=comenzi.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=orders.csv");
 
         PrintWriter writer = response.getWriter();
         writer.println("ID_COMANDA,DATA_COMENZII,ID_CLIENT,ID_FURNIZOR,ID_ANGAJAT,ID_MATERIAL,TOTAL_COMANDA," +
@@ -199,7 +214,7 @@ public class ComenziServlet extends HttpServlet {
 
     private void exportToPDF(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=comenzi.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=orders.pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
@@ -208,17 +223,17 @@ public class ComenziServlet extends HttpServlet {
 
         PdfPTable table = new PdfPTable(12);
         table.addCell("ID");
-        table.addCell("Data");
+        table.addCell("Date");
         table.addCell("ID Client");
-        table.addCell("ID Furnizor");
-        table.addCell("ID Angajat");
-        table.addCell("ID Material");
+        table.addCell("Supplier ID");
+        table.addCell("Employee ID");
+        table.addCell("Material ID");
         table.addCell("Total");
-        table.addCell("Statut");
-        table.addCell("Tip");
+        table.addCell("Status");
+        table.addCell("Type");
         table.addCell("Quantity");
         table.addCell("Total Price");
-        table.addCell("ID Transportator");
+        table.addCell("Carrier ID");
 
         while (rs.next()) {
             table.addCell(String.valueOf(rs.getInt("ID_COMANDA")));

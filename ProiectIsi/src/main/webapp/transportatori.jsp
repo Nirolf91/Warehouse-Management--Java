@@ -1,14 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="database.DatabaseConnection" %>
+<%!
+    private String h(String value) {
+        if (value == null) return "";
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Carrier Management</title>
     <style>
-        /* Stilizare pentru butoane */
+        /* Button styling */
         input[type="submit"], button, select {
             margin: 5px 0;
+            margin-right: 6px;
             padding: 10px 20px;
             font-size: 14px;
             font-weight: bold;
@@ -19,6 +30,10 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            margin: 8px 0;
         }
 
         input[type="submit"]:hover, button:hover {
@@ -34,7 +49,7 @@
             background-color: #c9302c;
         }
 
-        /* Stilizare pentru tabel */
+        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -50,7 +65,7 @@
             color: white;
             font-weight: bold;
             padding: 12px;
-            text-align: center; /* Centrare text pentru titluri */
+            text-align: center;
         }
 
         td {
@@ -136,6 +151,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="home.jsp"><button type="button">Home</button></a>
         <h2>Carrier Management</h2>
 
         <!-- Add/Update form -->
@@ -172,7 +188,7 @@
 
         <!-- Export form -->
 <form action="transportatori" method="get">
-    <label for="exportFormat">Export date:</label>
+    <label for="exportFormat">Export data as:</label>
     <select name="export" id="exportFormat">
         <option value="csv">CSV</option>
         <option value="pdf">PDF</option>
@@ -220,8 +236,8 @@
                 %>
                 <tr onclick="selectRow(this)">
                     <td><%= rs.getInt("ID_TRANSPORTATOR") %></td>
-                    <td><%= rs.getString("NUME") %></td>
-                    <td><%= rs.getString("CONTACT") %></td>
+                    <td><%= h(rs.getString("NUME")) %></td>
+                    <td><%= h(rs.getString("CONTACT")) %></td>
                     <td><%= rs.getDouble("PRET_PE_KG") %></td>
                 </tr>
                 <%
@@ -230,7 +246,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Error loading data: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error loading data: <%= h(e.getMessage()) %></td>
                 </tr>
                 <%
                     }

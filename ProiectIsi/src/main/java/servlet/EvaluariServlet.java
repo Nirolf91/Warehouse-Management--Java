@@ -125,7 +125,7 @@ public class EvaluariServlet extends HttpServlet {
 
     private void exportToCSV(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=evaluari.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=reviews.csv");
 
         PrintWriter writer = response.getWriter();
         writer.println("ID_EVALUARE,ID_CLIENT,SCOR,FEEDBACK,DATA_EVALUARII");
@@ -142,7 +142,7 @@ public class EvaluariServlet extends HttpServlet {
 
     private void exportToPDF(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=evaluari.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=reviews.pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
@@ -150,9 +150,9 @@ public class EvaluariServlet extends HttpServlet {
         document.add(new Paragraph("Review List\n\n"));
 
         PdfPTable table = new PdfPTable(5);
-        table.addCell("ID Evaluare");
+        table.addCell("Review ID");
         table.addCell("ID Client");
-        table.addCell("Scor");
+        table.addCell("Score");
         table.addCell("Feedback");
         table.addCell("Review Date");
 

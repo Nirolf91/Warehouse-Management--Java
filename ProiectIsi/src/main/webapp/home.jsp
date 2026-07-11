@@ -43,11 +43,11 @@
     <nav>
         <a href="angajati.jsp">Employees</a>
         <a href="clienti.jsp">Clients</a>
-        <a href="comenzi.jsp">Comenzi</a>
-        <a href="furnizori.jsp">Furnizori</a>
+        <a href="comenzi.jsp">Orders</a>
+        <a href="furnizori.jsp">Suppliers</a>
         <a href="evaluari.jsp">Reviews</a>
-        <a href="materiale.jsp">Materiale</a>
-        <a href="transportatori.jsp">Transportatori</a>
+        <a href="materiale.jsp">Materials</a>
+        <a href="transportatori.jsp">Carriers</a>
         <a href="logout.jsp" style="float: right;">Logout</a>
     </nav>
 

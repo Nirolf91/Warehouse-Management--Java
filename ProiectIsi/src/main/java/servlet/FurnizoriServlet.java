@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +23,14 @@ import java.sql.SQLException;
 
 @WebServlet("/furnizori")
 public class FurnizoriServlet extends HttpServlet {
+    private String page(HttpServletRequest request, String status, String message) {
+        return request.getContextPath() + "/furnizori.jsp?status=" + encode(status)
+                + "&message=" + encode(message);
+    }
+
+    private String encode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -47,7 +57,7 @@ public class FurnizoriServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("furnizori.jsp?status=error&message=SQL error: " + e.getMessage());
+            response.sendRedirect(page(request, "error", "SQL error: " + e.getMessage()));
         }
     }
 
@@ -67,8 +77,8 @@ public class FurnizoriServlet extends HttpServlet {
                     pstmt.setInt(1, Integer.parseInt(deleteId));
                     int rowsDeleted = pstmt.executeUpdate();
                     response.sendRedirect(rowsDeleted > 0
-                            ? "furnizori.jsp?status=success&message=Supplier deleted successfully!"
-                            : "furnizori.jsp?status=error&message=No supplier was found for deletion.");
+                            ? page(request, "success", "Supplier deleted successfully!")
+                            : page(request, "error", "No supplier was found for deletion."));
                 }
             } else if (nume != null && adresa != null && contact != null) {
                 if (idParam != null && !idParam.isEmpty()) {
@@ -78,25 +88,29 @@ public class FurnizoriServlet extends HttpServlet {
                         pstmt.setString(2, adresa);
                         pstmt.setString(3, contact);
                         pstmt.setInt(4, Integer.parseInt(idParam));
-                        pstmt.executeUpdate();
-                        response.sendRedirect("furnizori.jsp?status=success&message=Supplier updated successfully!");
+                        int rowsUpdated = pstmt.executeUpdate();
+                        response.sendRedirect(rowsUpdated > 0
+                                ? page(request, "success", "Supplier updated successfully!")
+                                : page(request, "error", "No supplier was found for update. Clear the ID field to add a new supplier."));
                     }
                 } else {
-                    String insertQuery = "INSERT INTO Furnizori (NUME, ADRESA, CONTACT) VALUES (?, ?, ?)";
+                    String insertQuery = "INSERT INTO Furnizori (ID_FURNIZOR, NUME, ADRESA, CONTACT) VALUES (furnizori_seq.NEXTVAL, ?, ?, ?)";
                     try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
                         pstmt.setString(1, nume);
                         pstmt.setString(2, adresa);
                         pstmt.setString(3, contact);
                         pstmt.executeUpdate();
-                        response.sendRedirect("furnizori.jsp?status=success&message=Supplier added successfully!");
+                        response.sendRedirect(page(request, "success", "Supplier added successfully!"));
                     }
                 }
             } else {
-                response.sendRedirect("furnizori.jsp?status=error&message=The submitted data is incomplete!");
+                response.sendRedirect(page(request, "error", "The submitted data is incomplete!"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("furnizori.jsp?status=error&message=SQL error: " + e.getMessage());
+            response.sendRedirect(page(request, "error", "SQL error: " + e.getMessage()));
+        } catch (NumberFormatException e) {
+            response.sendRedirect(page(request, "error", "Invalid supplier ID."));
         }
     }
 
@@ -117,7 +131,7 @@ public class FurnizoriServlet extends HttpServlet {
 
     private void exportToCSV(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=furnizori.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=suppliers.csv");
 
         PrintWriter writer = response.getWriter();
         writer.println("ID_FURNIZOR,NUME,ADRESA,CONTACT");
@@ -133,7 +147,7 @@ public class FurnizoriServlet extends HttpServlet {
 
     private void exportToPDF(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=furnizori.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=suppliers.pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());

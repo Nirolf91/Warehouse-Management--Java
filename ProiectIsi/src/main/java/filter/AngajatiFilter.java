@@ -17,6 +17,7 @@ public class AngajatiFilter {
         if (nume != null && !nume.isEmpty()) query.append(" AND NUME LIKE ?");
         if (functie != null && !functie.isEmpty()) query.append(" AND FUNCTIE LIKE ?");
         if (contact != null && !contact.isEmpty()) query.append(" AND DATE_DE_CONTACT LIKE ?");
+        query.append(" ORDER BY ID_ANGAJAT");
 
         PreparedStatement pstmt = connection.prepareStatement(query.toString());
         int index = 1;

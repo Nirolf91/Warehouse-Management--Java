@@ -71,7 +71,7 @@ public class TransportatoriServlet extends HttpServlet {
                 pretKg = Double.parseDouble(pretKgParam);
             }
         } catch (NumberFormatException e) {
-            response.sendRedirect("transportatori.jsp?status=error&message=Format invalid pentru price per kg.");
+            response.sendRedirect("transportatori.jsp?status=error&message=Invalid price per kg format.");
             return;
         }
 
@@ -133,7 +133,7 @@ public class TransportatoriServlet extends HttpServlet {
 
     private void exportToCSV(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=transportatori.csv");
+        response.setHeader("Content-Disposition", "attachment; filename=carriers.csv");
 
         PrintWriter writer = response.getWriter();
         writer.println("ID_TRANSPORTATOR,NUME,CONTACT,PRET_PE_KG");
@@ -149,7 +149,7 @@ public class TransportatoriServlet extends HttpServlet {
 
     private void exportToPDF(ResultSet rs, HttpServletResponse response) throws Exception {
         response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=transportatori.pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=carriers.pdf");
 
         Document document = new Document();
         PdfWriter.getInstance(document, response.getOutputStream());
@@ -157,7 +157,7 @@ public class TransportatoriServlet extends HttpServlet {
         document.add(new Paragraph("Carrier List\n\n"));
 
         PdfPTable table = new PdfPTable(4);
-        table.addCell("ID Transportator");
+        table.addCell("Carrier ID");
         table.addCell("Name");
         table.addCell("Contact");
         table.addCell("Price per Kg");

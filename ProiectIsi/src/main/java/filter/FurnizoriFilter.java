@@ -18,6 +18,7 @@ public class FurnizoriFilter {
         if (nume != null && !nume.isEmpty()) query.append(" AND NUME LIKE ?");
         if (adresa != null && !adresa.isEmpty()) query.append(" AND ADRESA LIKE ?");
         if (contact != null && !contact.isEmpty()) query.append(" AND CONTACT LIKE ?");
+        query.append(" ORDER BY ID_FURNIZOR");
 
         PreparedStatement pstmt = connection.prepareStatement(query.toString());
         int index = 1;

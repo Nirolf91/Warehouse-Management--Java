@@ -53,7 +53,7 @@ public class ImportAngajatiServlet extends HttpServlet {
                 }
                 pstmt.executeBatch();
             }
-            response.sendRedirect("angajati.jsp?status=success&message=Importul din CSV a fost realizat cu succes!");
+            response.sendRedirect("angajati.jsp?status=success&message=CSV import completed successfully!");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("angajati.jsp?status=error&message=CSV import error: " + e.getMessage());
@@ -81,7 +81,7 @@ public class ImportAngajatiServlet extends HttpServlet {
                 }
                 pstmt.executeBatch();
             }
-            response.sendRedirect("angajati.jsp?status=success&message=Importul din Excel a fost realizat cu succes!");
+            response.sendRedirect("angajati.jsp?status=success&message=Excel import completed successfully!");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("angajati.jsp?status=error&message=Excel import error: " + e.getMessage());

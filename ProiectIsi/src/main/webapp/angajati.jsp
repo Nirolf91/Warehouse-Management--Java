@@ -1,14 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Connection, java.sql.PreparedStatement, java.sql.ResultSet, java.sql.SQLException" %>
 <%@ page import="database.DatabaseConnection" %>
+<%!
+    private String h(String value) {
+        if (value == null) return "";
+        return value.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Employee Management</title>
    <style>
-       /* Stil general pentru butoane */
+       /* General button styling */
        input[type="submit"], button, select {
            margin-top: 10px;
+           margin-right: 6px;
+           margin-bottom: 4px;
            padding: 10px 20px;
            font-size: 14px;
            font-weight: bold;
@@ -19,6 +31,10 @@
            cursor: pointer;
            transition: background-color 0.3s ease, transform 0.2s ease;
            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+       }
+
+       form {
+           margin: 8px 0;
        }
 
        input[type="submit"]:hover, button:hover {
@@ -34,7 +50,7 @@
            background-color: #c9302c;
        }
 
-       /* Stilizare pentru tabel */
+       /* Table styling */
        table {
            width: 100%;
            border-collapse: collapse;
@@ -124,6 +140,7 @@
 </head>
 <body>
     <div class="container">
+        <a href="home.jsp"><button type="button">Home</button></a>
         <h2>Employee Management</h2>
 
         <!-- Add/Update form -->
@@ -134,7 +151,7 @@
             <input type="text" name="nume" id="nume" required><br>
             <label for="functie">Job Title:</label>
             <input type="text" name="functie" id="functie" required><br>
-            <label for="contact">Date de Contact:</label>
+            <label for="contact">Contact Details:</label>
             <input type="text" name="contact" id="contact" required><br>
             <input type="submit" value="Add / Update">
         </form>
@@ -170,7 +187,7 @@
             <input type="text" name="nume" id="numeFilter">
             <label for="functieFilter">Job Title:</label>
             <input type="text" name="functie" id="functieFilter">
-            <label for="contactFilter">Date de Contact:</label>
+            <label for="contactFilter">Contact Details:</label>
             <input type="text" name="contact" id="contactFilter">
             <button type="submit">Filter</button>
         </form>
@@ -183,7 +200,7 @@
                     <th onclick="sortTable(0)">ID</th>
                     <th onclick="sortTable(1)">Name</th>
                     <th onclick="sortTable(2)">Job Title</th>
-                    <th onclick="sortTable(3)">Date de Contact</th>
+                    <th onclick="sortTable(3)">Contact Details</th>
                 </tr>
             </thead>
             <tbody>
@@ -198,6 +215,7 @@
                     if (nume != null && !nume.isEmpty()) query.append(" AND NUME LIKE ?");
                     if (functie != null && !functie.isEmpty()) query.append(" AND FUNCTIE LIKE ?");
                     if (contact != null && !contact.isEmpty()) query.append(" AND DATE_DE_CONTACT LIKE ?");
+                    query.append(" ORDER BY ID_ANGAJAT");
 
                     try (Connection conn = DatabaseConnection.getConnection();
                          PreparedStatement stmt = conn.prepareStatement(query.toString())) {
@@ -212,9 +230,9 @@
                 %>
                 <tr onclick="selectRow(this)">
                     <td><%= rs.getInt("ID_ANGAJAT") %></td>
-                    <td><%= rs.getString("NUME") %></td>
-                    <td><%= rs.getString("FUNCTIE") %></td>
-                    <td><%= rs.getString("DATE_DE_CONTACT") %></td>
+                    <td><%= h(rs.getString("NUME")) %></td>
+                    <td><%= h(rs.getString("FUNCTIE")) %></td>
+                    <td><%= h(rs.getString("DATE_DE_CONTACT")) %></td>
                 </tr>
                 <%
                             }
@@ -222,7 +240,7 @@
                     } catch (SQLException e) {
                 %>
                 <tr>
-                    <td colspan="4" class="error">Error: <%= e.getMessage() %></td>
+                    <td colspan="4" class="error">Error: <%= h(e.getMessage()) %></td>
                 </tr>
                 <%
                     }
