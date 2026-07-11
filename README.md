@@ -37,11 +37,10 @@ The application is packaged as a Maven WAR project and runs on Tomcat with Jakar
 |       |   |-- grafic/          # JSON chart endpoints
 |       |   |-- service/         # helper services, including logging
 |       |   `-- servlet/         # CRUD/export/import/login servlets
-|       `-- webapp/              # JSP pages and static assets
+|       `-- webapp/              # JSP pages and public static assets
 |-- sql/
 |   |-- schema.sql               # Oracle schema and demo data
 |   `-- maintenance/             # optional repair/helper SQL scripts
-|-- imagini/                     # supporting images
 `-- README.md
 ```
 

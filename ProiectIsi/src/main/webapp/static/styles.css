@@ -41,7 +41,7 @@ button.filter-button {
 
 /* Background image styles */
 body {
-    background-image: url('static/warehouse1.jpg'); /* Path to the background image */
+    background-image: url('warehouse2.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -51,15 +51,14 @@ body {
 
 /* Form container styles */
 .login-container {
-    background: rgba(255, 255, 255, 0.9); /* Fundal semi-transparent */
+    background: rgba(255, 255, 255, 0.9);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-<style>
-    .image-container img {
-        display: block; /* Removes unwanted spacing */
-        width: 100%; /* The image takes the full width */
-        height: auto; /* Preserves image proportions */
-    }
-</style>
+
+.image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+}

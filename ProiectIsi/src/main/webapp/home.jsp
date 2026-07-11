@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" type="text/css" href="webapp/static/styles.css">
+<link rel="stylesheet" type="text/css" href="static/styles.css">
 
 <%
     String role = (String) session.getAttribute("role");
